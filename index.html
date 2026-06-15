@@ -1,0 +1,3189 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brain Snack</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Space+Mono&display=swap");
+      /* ─── Cute Cozy Office RPG Design Tokens ────────────────── */
+      :root {
+        --bg: #e2e8f5; /* Light blue desk mat */
+        --bg2: #ffffff; /* Fresh crisp sketchbook/memo page */
+        --bg3: #f4f0f8; /* Soft marshmallow lavender tray */
+        --accent: #a8b5e0; /* Pastel blue tape */
+        --accent2: #d6b8e6; /* Sweet lilac tape */
+        --txt: #2a2a35; /* Dark chunky ink */
+        --txt2: #65657b; /* Soft pencil lead gray */
+        --border: #2a2a35; /* Chunky black/dark purple pixel border */
+        --success: #8dd6b0; /* Fresh desk plant */
+        --danger: #d37a7a; /* Strawberry eraser */
+        --warn: #f5d487; /* Warm cozy desk lamp */
+        --card: #ffffff; /* Creamy matte paper */
+        --shadow: 4px 4px 0px var(--border); /* Hard solid pixel shadow */
+        --radius: 4px; /* Crisp corners */
+        --font-display: "Quicksand", system-ui, sans-serif;
+        --font-mono: "Space Mono", monospace;
+        --transition: 0.1s; /* Snappy, no smooth fading */
+        --nav-h: 80px;
+        --folder: #fbd3a0; /* Warm manila folder yellow */
+        --folder-border: #955958;
+      }
+
+      [data-theme="dark"] {
+        --bg: #2a2a35;
+        --bg2: #3d3d4e;
+        --bg3: #4a4a5e;
+        --accent: #7886b5;
+        --accent2: #a68ab5;
+        --txt: #f4f0f8;
+        --txt2: #b5b5c8;
+        --border: #181820;
+        --card: #3d3d4e;
+        --shadow: 4px 4px 0px #181820;
+        --folder: #946e54; /* A deeper, cozy wood/leather color for dark mode */
+        --folder-border: #6d4d3a;
+      }
+
+      /* ─── Reset ─────────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        font-size: 15px;
+      }
+      body {
+        font-family: var(--font-display);
+        font-size: 16px;
+        background-color: var(--bg);
+        background-image: radial-gradient(
+          var(--accent) 1.5px,
+          transparent 1.5px
+        );
+        background-size: 24px 24px; /* Dot grid spacing */
+        color: var(--txt);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      button {
+        cursor: pointer;
+        font-family: inherit;
+      }
+      input,
+      select,
+      textarea {
+        font-family: inherit;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 99px;
+      }
+
+      /* ─── Top Nav ───────────────────────────────────────────── */
+      #topnav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--nav-h);
+        background: var(--bg2); /* Changed to white/paper color */
+        border-bottom: 2px solid var(--border);
+        box-shadow: 0 4px 0 rgba(42, 42, 53, 0.1);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        z-index: 100;
+      }
+
+      #topnav-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-right: 20px;
+        flex-shrink: 0;
+      }
+      .logo-icon {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        background: var(--accent2);
+        border: 2px solid var(--border);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--txt);
+      }
+      #topnav .logo-text {
+        color: var(--txt); /* Dark text instead of white */
+        font-size: 1.5rem;
+      }
+
+      /* ─── Desktop nav links ─────────────────────────────────── */
+      .topnav-links {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        flex: 1;
+        overflow: hidden;
+      }
+      .topnav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 13px;
+        border: none;
+        border-radius: 8px;
+        background: none;
+        color: #8890b5;
+        font-size: 0.83rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+      .topnav-btn:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+      }
+      .topnav-btn.active {
+        background: rgba(79, 110, 247, 0.25);
+        color: #fff;
+      }
+      .topnav-btn {
+        color: var(--txt2);
+        font-size: 1.2rem;
+      }
+      .topnav-btn:hover {
+        background: var(--bg3);
+        color: var(--txt);
+      }
+      .topnav-btn.active {
+        background: var(--accent);
+        border: 2px solid var(--border);
+        color: var(--txt);
+        box-shadow: 2px 2px 0 var(--border);
+        transform: translateY(-2px);
+      }
+      /* ─── Right side of topnav ──────────────────────────────── */
+      #topnav-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+      #theme-toggle {
+        background: var(--bg3);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2px 5px;
+        color: var(--txt2);
+        font-size: 1rem;
+        transition: all var(--transition);
+      }
+      #theme-toggle:hover {
+        background: var(--accent2);
+        color: var(--txt);
+      }
+      #topnav-hamburger {
+        display: none;
+        background: var(--accent2);
+        border: 2px solid var(--border);
+        border-radius: 4px;
+        padding: 2px 5cqmin;
+        color: #fff;
+        font-size: 1rem;
+        transition: all var(--transition);
+      }
+      #topnav-hamburger:hover {
+        background: var(--accent2);
+      }
+      /* ─── Mobile drawer ─────────────────────────────────────── */
+      #topnav-drawer {
+        position: fixed;
+        top: var(--nav-h);
+        left: 0;
+        right: 0;
+        background: #1e2235;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        padding: 10px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        z-index: 99;
+        transform: translateY(-110%);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      #topnav-drawer.open {
+        transform: translateY(0);
+      }
+      .drawer-btn {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 9px;
+        background: none;
+        color: #8890b5;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-align: left;
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+      .drawer-btn:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+      }
+      .drawer-btn.active {
+        background: rgba(79, 110, 247, 0.22);
+        color: #fff;
+      }
+
+      .drawer-divider {
+        font-size: 0.63rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #4a5278;
+        padding: 10px 12px 4px;
+      }
+      .drawer-exam-btn {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 12px 8px 24px;
+        border: none;
+        border-radius: 8px;
+        background: none;
+        color: #8890b5;
+        font-size: 0.82rem;
+        text-align: left;
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+      .drawer-exam-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+      }
+      .drawer-exam-btn.active {
+        background: rgba(79, 110, 247, 0.28);
+        color: #fff;
+      }
+
+      #topnav-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        top: var(--nav-h);
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 98;
+      }
+      #topnav-backdrop.visible {
+        display: block;
+      }
+
+      /* ─── Main content (pushed below nav) ───────────────────── */
+      #main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-top: var(--nav-h);
+        min-height: calc(100vh - var(--nav-h));
+        overflow-y: auto;
+      }
+      #topbar {
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 24px;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+      .breadcrumb {
+        font-size: 1.5rem;
+        color: var(--txt2);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .breadcrumb span {
+        color: var(--txt);
+        font-weight: 600;
+      }
+
+      #page-container {
+        flex: 1;
+        padding: 24px;
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      /* ─── Status dot ────────────────────────────────────────── */
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        min-width: 7px;
+        background: #4a5278;
+      }
+      .status-dot.done {
+        background: var(--success);
+      }
+      .status-dot.inprog {
+        background: var(--warn);
+      }
+      .status-dot.new {
+        background: #4a5278;
+      }
+
+      /* ─── Cards ─────────────────────────────────────────────── */
+      .card,
+      .question-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 22px;
+        box-shadow: var(--shadow);
+        position: relative; /* Needed for tape */
+        margin-top: 14px;
+      }
+      .card + .card {
+        margin-top: 14px;
+      }
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .section-head h2 {
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+
+      /* ─── Buttons ───────────────────────────────────────────── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        border-radius: var(--radius);
+        font-size: 1.1rem; /* Adjusted for pixel font */
+        border: 2px solid var(--border);
+        box-shadow: 2px 2px 0 var(--border);
+        cursor: pointer;
+        transition:
+          transform 0.1s,
+          box-shadow 0.1s;
+        text-transform: uppercase;
+      }
+      .btn:hover,
+      .btn:active {
+        transform: translate(2px, 2px);
+        box-shadow: 0px 0px 0 var(--border); /* Flatten shadow on press */
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: var(--txt); /* Keep text dark for contrast */
+      }
+      .btn-primary:hover {
+        background: #3d58e3;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(79, 110, 247, 0.4);
+      }
+      .btn-secondary {
+        background: var(--bg2);
+        color: var(--txt);
+      }
+      .btn-secondary:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .btn-danger {
+        background: #fee2e2;
+        color: var(--danger);
+      }
+      .btn-danger:hover {
+        background: var(--danger);
+        color: #fff;
+      }
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.78rem;
+      }
+
+      /* ─── Exam grid / cards ─────────────────────────────────── */
+      .exams-grid {
+        display: grid;
+        /*grid-template-columns: repeat(auto-fill, minmax(240px, 280px));*/
+        grid-template-columns: repeat(
+          3,
+          1fr
+        ); /* Forces exactly 3 equal columns */
+        gap: 16px;
+      }
+      .exam-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+      .exam-card::before {
+        display: none;
+      }
+      .exam-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0px var(--border);
+      }
+      .exam-card h3 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .exam-card .meta {
+        font-size: 0.76rem;
+        color: var(--txt2);
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 99px;
+        margin-top: 10px;
+      }
+      .status-badge.done {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-badge.inprog {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-badge.new {
+        background: var(--bg3);
+        color: var(--txt2);
+      }
+      /* Create the Washi Tape effect */
+      .exam-card::after,
+      .question-card::after {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-3deg);
+        width: 50px;
+        height: 18px;
+        background: var(--accent);
+        border: 2px solid var(--border);
+        box-shadow: 2px 2px 0 var(--border);
+        opacity: 0.9;
+        z-index: 10;
+      }
+
+      /* Alternate tape color & angle for variety */
+      .exam-card:nth-child(even)::after {
+        background: var(--accent2);
+        transform: translateX(-50%) rotate(4deg);
+      }
+      /* ─── Quiz ──────────────────────────────────────────────── */
+      #quiz-header {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 41px;
+        z-index: 4;
+        box-shadow: var(--shadow);
+      }
+      .quiz-title {
+        font-size: 1rem;
+        font-weight: 700;
+        flex: 1;
+      }
+      .quiz-progress-bar {
+        height: 6px;
+        background: var(--bg3);
+        border-radius: 99px;
+        overflow: hidden;
+        flex: 1;
+        max-width: 260px;
+      }
+      .quiz-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 99px;
+        transition: width 0.4s ease;
+      }
+
+      /* ─── Question cards ────────────────────────────────────── */
+      .q-number {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .q-type-badge {
+        background: var(--bg3);
+        color: var(--txt2);
+        font-size: 0.65rem;
+        padding: 2px 8px;
+        border-radius: 99px;
+        font-weight: 600;
+      }
+      .q-text {
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.55;
+        margin-bottom: 18px;
+      }
+      .q-image-container {
+        margin-bottom: 18px;
+        max-width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        display: inline-block;
+      }
+      .q-image-preview {
+        max-height: 280px;
+        max-width: 100%;
+        display: block;
+        object-fit: contain;
+      }
+
+      .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .choice-label {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        border: 2px solid var(--border);
+        cursor: pointer;
+        transition: all var(--transition);
+        font-size: 0.9rem;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .choice-label:hover {
+        border-color: var(--accent);
+        background: rgba(79, 110, 247, 0.06);
+      }
+      .choice-label input {
+        display: none;
+      }
+      .choice-custom {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        border: 2px solid var(--border);
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        color: transparent;
+      }
+      .choice-label.radio .choice-custom {
+        border-radius: 50%;
+      }
+      .choice-label.checkbox .choice-custom {
+        border-radius: 5px;
+      }
+      .choice-label.selected {
+        border-color: var(--accent);
+        background: rgba(79, 110, 247, 0.08);
+      }
+      .choice-label.selected .choice-custom {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .choice-label.correct {
+        border-color: var(--success) !important;
+        background: rgba(16, 185, 129, 0.08) !important;
+      }
+      .choice-label.correct .choice-custom {
+        background: var(--success);
+        border-color: var(--success);
+        color: #fff;
+      }
+      .choice-label.incorrect {
+        border-color: var(--danger) !important;
+        background: rgba(239, 68, 68, 0.08) !important;
+      }
+      .choice-label.incorrect .choice-custom {
+        background: var(--danger);
+        border-color: var(--danger);
+        color: #fff;
+      }
+      .choice-label.show-correct {
+        border-color: var(--success) !important;
+        background: rgba(16, 185, 129, 0.05) !important;
+      }
+      .choice-text {
+        flex: 1;
+        line-height: 1.45;
+      }
+      .choice-label.disabled {
+        cursor: default;
+      }
+      .choice-icon {
+        margin-left: auto;
+        font-weight: bold;
+      }
+
+      /* ─── Feedback ──────────────────────────────────────────── */
+      .feedback-box {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border-left: 4px solid;
+        font-size: 0.87rem;
+        line-height: 1.6;
+      }
+      .feedback-box.correct {
+        background: rgba(16, 185, 129, 0.08);
+        border-color: var(--success);
+        color: #065f46;
+      }
+      .feedback-box.incorrect {
+        background: rgba(239, 68, 68, 0.08);
+        border-color: var(--danger);
+        color: #991b1b;
+      }
+      [data-theme="dark"] .feedback-box.correct {
+        color: #6ee7b7;
+      }
+      [data-theme="dark"] .feedback-box.incorrect {
+        color: #fca5a5;
+      }
+      .feedback-title {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .feedback-box .explanation {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .q-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+      }
+
+      /* ─── Summary ───────────────────────────────────────────── */
+      .summary-hero {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        border-radius: var(--radius);
+        padding: 28px;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .summary-score {
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .summary-score span {
+        font-size: 1.4rem;
+        opacity: 0.8;
+      }
+      .review-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--txt2);
+        margin-left: auto;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .toggle-switch {
+        width: 38px;
+        height: 21px;
+        border-radius: 99px;
+        background: var(--border);
+        position: relative;
+        display: inline-block;
+        transition: background 0.2s ease;
+      }
+      .toggle-switch::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform var(--transition);
+      }
+      .toggle-switch.on {
+        background: var(--accent);
+      }
+      .toggle-switch.on::after {
+        transform: translateX(17px);
+      }
+
+      /* ─── Admin ─────────────────────────────────────────────── */
+      .admin-tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--border);
+      }
+      .admin-tab {
+        padding: 8px 16px;
+        background: none;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--txt2);
+        border: 2px solid transparent; /* Prevents layout jumping */
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+      /* ─── Active Admin Tab ─── */
+      .admin-tab.active {
+        color: var(
+          --txt
+        ); /* Darker text for better legibility against the background */
+        background: var(--bg3); /* Uses your soft lavender tray color */
+        border-bottom-color: var(
+          --accent
+        ); /* Keeps your pastel blue accent line */
+        border-radius: 8px 8px 0 0; /* Rounds the top corners like a physical folder tab */
+        border-top: 2px solid var(--border); /* Adds the chunky pixel border to the top */
+        border-left: 2px solid var(--border); /* And the left */
+        border-right: 2px solid var(--border); /* And the right */
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--txt2);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+      .form-input {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        background: var(--bg);
+        color: var(--txt);
+        font-size: 0.88rem;
+        outline: none;
+      }
+      .form-input:focus {
+        border-color: var(--accent);
+      }
+      textarea.form-input {
+        min-height: 80px;
+      }
+      .choice-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        margin-bottom: 8px;
+        background: var(--bg);
+      }
+      .choice-row.correct-choice {
+        border-color: var(--success);
+        background: rgba(16, 185, 129, 0.05);
+      }
+      .choice-row input[type="text"] {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--txt);
+        outline: none;
+      }
+      .choice-row .correct-toggle {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--txt2);
+        cursor: pointer;
+      }
+
+      /* ─── Toast & Modal ─────────────────────────────────────── */
+      #toast-container {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 9999;
+      }
+      .toast {
+        background: var(--txt);
+        color: var(--bg);
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        box-shadow: var(--shadow);
+      }
+      .toast.success {
+        background: var(--success);
+        color: #fff;
+      }
+      .toast.error {
+        background: var(--danger);
+        color: #fff;
+      }
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+      }
+      .modal {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 28px;
+        max-width: 500px;
+        width: 90%;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      /* ─── Code / Rich editor ────────────────────────────────── */
+      .q-text pre {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px;
+        margin: 12px 0;
+        overflow-x: auto;
+      }
+      .q-text code {
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        color: var(--accent2);
+      }
+      .q-text p code {
+        background: var(--bg3);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: var(--danger);
+      }
+
+      .rich-editor-wrap {
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+      .rich-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 6px;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg3);
+      }
+      .rt-btn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--txt2);
+        transition: all var(--transition);
+      }
+      .rt-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .rich-editor-wrap textarea.form-input {
+        border: none;
+        border-radius: 0;
+        margin: 0;
+      }
+      .rich-editor-wrap textarea.form-input:focus {
+        box-shadow: none;
+      }
+      .rich-preview {
+        border-top: 1px solid var(--border);
+        padding: 10px 12px;
+        background: var(--card);
+      }
+      .rich-preview-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--txt2);
+        margin-bottom: 6px;
+      }
+      .rich-preview-body {
+        font-size: 0.88rem;
+        line-height: 1.6;
+      }
+      .rich-preview-body pre {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+        overflow-x: auto;
+      }
+      .rich-preview-body code {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        color: var(--accent2);
+      }
+      .rich-preview-body img,
+      .q-text img,
+      .feedback-box .explanation img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 10px 0;
+        display: block;
+      }
+
+      .math-btn-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+      }
+      .math-tpl-btn {
+        background: var(--bg3);
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 8px 4px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all var(--transition);
+      }
+      .math-tpl-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(79, 110, 247, 0.08);
+      }
+      .math-preview-box {
+        min-height: 46px;
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        padding: 10px 14px;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+      }
+
+      .choice-row .row-tools {
+        display: flex;
+        gap: 4px;
+      }
+      .choice-row .row-tool-btn {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 4px 7px;
+        font-size: 0.72rem;
+        color: var(--txt2);
+      }
+      .choice-row .row-tool-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ─── Responsive ────────────────────────────────────────── */
+      @media (max-width: 700px) {
+        .exams-grid {
+          grid-template-columns: 1fr; /* Forces exactly 1 column on small screens */
+        }
+        .topnav-links {
+          display: none;
+        }
+
+        #topnav-hamburger {
+          display: flex;
+        }
+        .math-btn-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        #page-container {
+          padding: 16px;
+        }
+        #quiz-header {
+          top: 41px;
+        }
+      }
+
+      /* ─── Subject Folder Labels (Full Width) ─── */
+      .subject-folder-label {
+        display: flex; /* Changed from inline-flex so it stretches */
+        width: 100%; /* Forces it to fill the container */
+        align-items: center;
+        background: var(--folder);
+        color: var(--txt);
+        padding: 10px 16px;
+        border: 2px solid var(--folder-border);
+        border-radius: 8px; /* Rounded evenly on all corners for a clean bar look */
+        font-size: 1.15rem;
+        font-weight: 700;
+        box-shadow: 4px 4px 0 var(--folder-border);
+        margin-bottom: 18px;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav id="topnav">
+      <div id="topnav-left">
+        <div class="logo-icon">BS</div>
+        <span class="logo-text">Brain Snack</span>
+      </div>
+
+      <div id="topnav-links" class="topnav-links">
+        <button class="topnav-btn active" data-nav="home">Menu</button>
+        <button class="topnav-btn" data-nav="admin">Chef</button>
+        <button class="topnav-btn" data-nav="data">Fridge</button>
+      </div>
+
+      <div id="topnav-right">
+        <button id="theme-toggle" aria-label="moon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1024 1024"
+            width="30"
+            height="30"
+          >
+            <g id="Colors">
+              <g>
+                <path
+                  fill="#bddbda"
+                  d="M442.88,374.63c.78-2.62.38-1.46,0,0h0Z"
+                />
+                <path
+                  fill="#bddbda"
+                  d="M860.5,693.67c-1.47-5.34-5.59-11.12-10.57-13.75-12.07-6.38-23.74-2.07-31.47,8.25,3.79-5.06-.74.53-1.69,1.48-1.54,1.53-3.19,2.92-4.84,4.34-.03.03-.06.05-.09.08-.13.09-.28.19-.44.3-1.79,1.24-3.56,2.52-5.36,3.76-.47.33-.95.65-1.42.98-4.05-1.39-8.51-1.61-13-.25-6.53,1.98-13.09,3.37-19.79,4.59-.21.04-.4.07-.57.11-.18.01-.38.03-.61.05-1.22.11-2.44.25-3.66.36-3.67.33-7.35.52-11.04.62-6.8.18-13.61-.02-20.39-.48-3.11-.21-6.21-.48-9.31-.8-1.86-.19-3.72-.43-5.59-.63-.28-.03-.52-.06-.72-.08-.18-.03-.37-.06-.61-.09-26.35-4.04-52.59-9.66-78.42-16.22-12.35-3.14-24.61-6.72-36.54-11.21-1.62-.61-3.22-1.26-4.83-1.88-.18-.07-.34-.13-.49-.19-2.75-1.23-5.5-2.45-8.21-3.77-5.69-2.77-11.24-5.83-16.61-9.19-2.73-1.71-5.4-3.51-8.02-5.37-1.2-.85-2.38-1.74-3.57-2.61-.08-.06-.14-.1-.22-.16-.19-.16-.42-.35-.7-.59-5-4.14-9.9-8.38-14.63-12.83-9.39-8.83-18.33-18.15-27.13-27.56-8.7-9.3-17.16-18.82-25.15-28.73-1.08-1.34-2.15-2.7-3.22-4.05-.04-.05-.08-.1-.12-.16-1.87-2.56-3.8-5.08-5.64-7.66-3.67-5.15-7.2-10.42-10.52-15.8-3.32-5.38-6.45-10.89-9.34-16.52-1.33-2.59-2.61-5.21-3.84-7.85-.75-1.62-1.68-3.29-2.24-4.98.06.18.11.32.16.47-.19-.53-.42-1.15-.64-1.7-4.94-12.42-8.8-25.26-11.8-38.28-1.48-6.45-2.76-12.94-3.84-19.47-.43-2.58-.95-5.2-1.22-7.81-.05-.57-.1-1.11-.13-1.39-.2-1.71-.39-3.41-.57-5.12-1.29-12.53-1.87-25.14-1.75-37.73.11-12.6.92-25.19,2.4-37.7.05-.46.22-1.16.39-1.81-.09.32-.2.68-.33,1.11.3-1,.33-2.34.49-3.4.51-3.4,1.06-6.79,1.67-10.17,1.11-6.2,2.39-12.37,3.83-18.51,3.28-13.94,7.43-27.67,12.41-41.09,1.2-3.22,2.44-6.42,3.73-9.61.06-.14.93-2.19,1.23-2.92.5-1.13,1.06-2.41,1.17-2.65,2.81-6.27,5.81-12.46,9-18.54,6.47-12.37,13.74-24.22,21.93-35.51,0,0,0-.01.01-.02,1.24-1.47,2.43-2.99,3.69-4.45,2.15-2.49,4.37-4.92,6.69-7.26,2.31-2.34,4.7-4.59,7.18-6.74,1.15-1,2.45-2.42,3.79-3.15-5.39,2.95.81-.49,1.97-1.29,7.47-5.16,12.4-14.22,11.31-23.09,7.88-2.27,15.77-4.54,23.65-6.82,11.55-3.35,19.93-16.36,16.06-28.29-3.8-11.73-15.91-19.65-28.29-16.06-28.32,8.21-56.7,16.19-84.69,25.35-3.97-3.88-9.15-6.27-14.96-5.52-8.63,1.12-15.47,3.1-23.35,6.86-5.01,2.39-9.89,5.07-14.77,7.69-9.89,5.32-19.65,10.87-29.28,16.64-19.47,11.68-38.62,24.13-56.6,38.02-18.81,14.53-33.88,31.59-47.15,51.31-10.8,16.04-20.87,32.72-30.54,49.49-3.23,1.9-6.03,4.58-8.05,8.01-31.66,53.74-51.11,114.26-55.59,176.51-4.22,58.65,6.93,117.34,31.88,170.5,23.81,50.72,61.36,94.92,108.07,125.94,26.28,17.46,55.27,31.64,83.92,44.77,15.66,7.17,31.6,13.38,48.44,17.09,17.41,3.83,35.21,5.9,52.88,8.14,32.73,4.15,65.6,6.38,98.2-.19,13.42-2.7,26.12-7.56,38.61-13,7.22,5.41,17.09,6.76,25.41,1.76,7.25-4.36,14.5-8.73,21.98-12.67,3.47-1.83,7.05-3.43,10.56-5.17.16-.07.29-.13.41-.18.51-.21,1.01-.41,1.52-.62,1.65-.66,3.31-1.3,4.96-1.97,8.75-3.51,17.53-7.02,25.23-12.55,7.86-5.65,15.03-12.05,22.24-18.48,25.31-22.58,51.1-44.84,73.48-70.43,1.77-2.02,3.22-4.33,4.31-6.79,10.06-7.27,19.5-15.25,27.02-25.29,3.34-4.46,3.73-12.61,2.32-17.72ZM686.61,763.98c-.08-1.05-.17-2.1-.27-3.15.76.06,1.52.11,2.28.16-.66,1-1.33,2-2.01,2.99Z"
+                />
+              </g>
+              <path
+                fill="#95adab"
+                d="M341.03,376.24c-.4-.86-.83-1.71-1.29-2.56-3.8-6.87-11.41-10.89-19.11-11.29-2.15-2.62-4.76-4.85-7.86-6.66-14.03-8.18-30.76-.59-38.91,11.99-11.26,17.38-6.74,39.23,1.76,56.61,4.97,10.18,13.42,18.18,24.56,20.98,14.09,3.54,27.86-3.87,34.9-16.06,4.62-8,8.12-16.95,9.47-26.04,4.56-8.42,3.28-20.25-3.51-26.97Z"
+              />
+              <path
+                fill="#95adab"
+                d="M397.4,579.78c-2.72-5.35-5.13-11.01-8.31-16.09-7.16-11.48-20.51-17.48-33.84-13.84-1.82.5-3.63,1.09-5.42,1.77-2.35-.87-4.89-1.47-7.59-1.76-19.31-2.1-30.08,18.09-33.92,33.8-3.32,13.6-3.28,27.19-.78,40.9,2.31,12.67,8,27.05,16.9,36.61,7.2,7.74,15.89,8.95,25.92,8.6,9.41-.33,18.5-.99,26.94-5.64,13.66-7.51,21.59-21.73,25.39-36.38,1.79-6.92,3.5-14.35,3.4-21.49-.14-9.7-4.41-18.05-8.69-26.47Z"
+              />
+              <path
+                fill="#95adab"
+                d="M523.13,731.17c-2.73-1.43-5.8-2.3-8.95-2.6-3.28-2-7.08-3.06-11.21-2.65-10.45,1.06-18.59,5.09-24.27,14.26-3.9,6.29-4.77,13.73-5.53,20.9-1.76,16.52,7.4,35.05,24.6,39.17,37.85,9.08,59.55-51.12,25.37-69.08Z"
+              />
+            </g>
+            <g id="Outlines">
+              <path d="M600.14,142.66c1.93,0,1.93-3,0-3s-1.93,3,0,3h0Z" />
+              <path
+                d="M599.81,132.68c-55.03,27.94-99.92,74.55-129.17,128.61-29.4,54.34-43.56,116.98-36.25,178.6,7.35,62.02,33.46,120.82,74.2,168.14,41.55,48.25,98.29,81.71,160.5,95.16s131.67,7.58,191.65-18.84c7.27-3.2,14.39-6.74,21.37-10.54l-14.37-14.37c-44.64,92.64-123.14,171.18-222.85,201.8-102.11,31.36-217.2,12.94-304.08-49.27-80.85-57.9-136.12-152.24-147.64-250.98-12.24-104.88,22.82-213.72,92.38-292.95,34.55-39.35,77.48-70.08,126.32-89.16,49.08-19.17,101.69-27.42,154.24-27.76,13.01-.09,26.01.32,38.99,1.12,5.67.35,10.5-5.08,10.5-10.5,0-5.97-4.82-10.15-10.5-10.5-55.18-3.39-111.35.76-164.66,15.92-52.82,15.03-102.25,41.22-142.82,78.41-40.7,37.31-72.99,84.33-94.67,135.01-22.01,51.46-33.92,107.17-33.18,163.23.71,53.77,13.37,106.73,35.94,155.46,22.06,47.63,54.03,91.09,93.3,125.96,41.25,36.62,90.36,63.45,143.52,78.24,54.48,15.15,112.21,17.76,167.84,7.73,54.09-9.76,105.34-32.63,149.19-65.71,43.53-32.84,80.04-74.33,107.92-121.16,6.64-11.15,12.75-22.61,18.39-34.3,4.48-9.29-4.72-19.62-14.37-14.37-53.15,28.95-115.88,39.45-175.73,31.04-59.41-8.35-114.97-35-157.46-77.5-41-41.02-69.06-94.33-80.06-151.25-10.88-56.29-2.8-115,21-167.03,24.07-52.61,62.69-99.22,112.24-129.58,6.15-3.77,12.46-7.27,18.9-10.54,5.06-2.57,6.51-9.68,3.77-14.37-3.01-5.14-9.29-6.34-14.37-3.77h0Z"
+              />
+              <path d="M314.44,353.38c1.93,0,1.93-3,0-3s-1.93,3,0,3h0Z" />
+              <path
+                d="M311.79,358.13c13.34,6.35,24.59,17.24,28.11,31.98,2.97,12.43-1.43,27.5-12.09,35.1-12.22,8.71-29.7,6.55-40.69-3.16s-14.76-24.44-10.11-38.47,21.54-27.05,37.29-24.39c5.59.94,11.31-1.48,12.92-7.33,1.38-5.04-1.71-11.97-7.33-12.92-23.05-3.89-46.15,7.59-58.05,27.7-11.86,20.04-9.97,45.8,4.46,63.91s39.34,25.98,60.87,18.27,34.59-28.46,34.61-50.91c.02-25.1-17.3-47.41-39.38-57.91-5.12-2.43-11.33-1.42-14.37,3.77-2.68,4.58-1.38,11.92,3.77,14.37h0Z"
+              />
+              <path
+                d="M354.03,555.55c20.11,4.48,36.69,18.74,42.69,38.7,5.96,19.83,1.32,42.25-17.44,53.12-17.32,10.04-43.18,13.41-59.88.34-16.51-12.92-16.22-40.16-10.7-58.46s24.83-38.73,45.32-33.7c13.12,3.22,18.72-17.02,5.58-20.25-26.76-6.57-54.98,12.52-66.34,36.13-11.88,24.7-13.41,61.01,4.07,83.53,19.07,24.58,54.56,26.6,81.65,15.68,13.17-5.31,25.07-13.56,32.43-25.97s9.91-27.67,8.28-41.86c-3.77-32.87-27.6-60.28-60.1-67.51-13.17-2.93-18.79,17.31-5.58,20.25h0Z"
+              />
+              <path
+                d="M512.14,734.37c10.24,3.23,18.53,12.51,19.91,23.3,1.42,11.09-4.38,22.61-14.03,28.14-21.96,12.58-49.02-10.38-39.27-34.16,6.09-14.85,21-18.17,35.51-17.06,5.66.44,10.5-5.14,10.5-10.5,0-6.04-4.82-10.06-10.5-10.5-20.84-1.6-41.1,5.5-52,24.29-10.22,17.62-7.68,40.2,5.28,55.67s35.08,20.89,53.48,13.89c18.83-7.16,31.53-25.08,32.14-45.25.66-22.03-14.83-41.57-35.45-48.07-12.92-4.07-18.45,16.2-5.58,20.25h0Z"
+              />
+            </g>
+          </svg>
+        </button>
+        <button id="topnav-hamburger" aria-label="Open menu">☰</button>
+      </div>
+    </nav>
+
+    <!-- Mobile dropdown drawer -->
+    <div id="topnav-drawer">
+      <button class="drawer-btn active" data-nav="home">Menu</button>
+      <button class="drawer-btn" data-nav="admin">Chef</button>
+      <button class="drawer-btn" data-nav="data">Fridge</button>
+    </div>
+    <div id="topnav-backdrop"></div>
+
+    <div id="main">
+      <div id="topbar">
+        <div class="breadcrumb" id="breadcrumb">Menu</div>
+      </div>
+      <div id="page-container">
+        <div id="page-content"></div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+      "use strict";
+      // ─── Core Local Storage State Architecture ───
+      const DEFAULT_DATA = {
+        subjects: [
+          {
+            id: "s1",
+            name: "Sample Subject",
+            exams: [
+              {
+                id: "e1",
+                name: "Quiz 1",
+                questions: [
+                  {
+                    id: "q1",
+                    type: "mcq",
+                    text: "In a simple dense (fully connected) layer, the output for an input vector $x$ is computed as $y=Wx+b$. What is the main role of the bias term $b$ in this affine transform?\n\n![image](data:image/webp;base64,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)",
+                    choices: [
+                      {
+                        id: "0",
+                        text: "It allows the model to represent shifts that are not forced through the origin",
+                      },
+                      {
+                        id: "1",
+                        text: "It enforces sparsity by setting some outputs to zero",
+                      },
+                      {
+                        id: "2",
+                        text: "It ensures the weights W remain normalized during training",
+                      },
+                      {
+                        id: "3",
+                        text: "It scales the input features to a new range",
+                      },
+                    ],
+                    correct: ["0"],
+                    explanation:
+                      "The bias vector adds a constant shift to the output of the linear transformation Wx. This means the dense layer is not restricted to functions that pass through the origin. By including b, the affine transform can represent translated hyperplanes and more flexible decision boundaries. For example, in binary classification with a single neuron, $y=w^⊤ x+b$ can describe any separating line (in 2D) or hyperplane (in higher dimensions), not just those anchored at the origin. This additional degree of freedom is crucial for modeling real-world relationships between inputs and outputs, and is one reason why almost all dense layers include a bias term unless they are followed by separate normalization or bias operations.",
+                    img: "",
+                  },
+                  {
+                    id: "q2",
+                    type: "tf",
+                    text: "Python is a statically typed programming language.",
+                    choices: [
+                      {
+                        id: "true",
+                        text: "True",
+                      },
+                      {
+                        id: "false",
+                        text: "False",
+                      },
+                    ],
+                    correct: ["false"],
+                    explanation:
+                      "Python is dynamically typed; checking assignments occurs at runtime.",
+                  },
+                  {
+                    id: "q-1781326630805",
+                    type: "mcq",
+                    text: "Gradient descent updates parameters by moving in the direction that most reduces the loss. Which update rule captures basic gradient descent for a parameter tensor *θ* with learning rate *η*?",
+                    choices: [
+                      {
+                        id: "0",
+                        text: "$θ_{new}= θ_{old}-L/η$",
+                      },
+                      {
+                        id: "1",
+                        text: "$θ_{new}= η∇_{θ}L$",
+                      },
+                      {
+                        id: "2",
+                        text: "$θ_{new} =θ_{old} +η∇_θ L$",
+                      },
+                      {
+                        id: "3",
+                        text: "$θ_{new}= θ_{old}-η∇_{θ}L$",
+                      },
+                    ],
+                    correct: ["3"],
+                    explanation: "",
+                    img: "",
+                  },
+                  {
+                    id: "q-1781327107525",
+                    type: "multi",
+                    text: "Which of the following techniques can be used to handle missing data in a dataset before feeding it into a machine learning model? (Select ALL that apply)",
+                    choices: [
+                      {
+                        id: "0",
+                        text: "Mean, median, or mode imputation",
+                      },
+                      {
+                        id: "1",
+                        text: "Dropping rows or columns with a high percentage of missing values",
+                      },
+                      {
+                        id: "2",
+                        text: "Applying L1 (Lasso) regularization directly to the raw missing fields",
+                      },
+                      {
+                        id: "3",
+                        text: "Using algorithms like KNN or MICE to predict the missing values",
+                      },
+                    ],
+                    correct: ["0", "1", "3"],
+                    explanation:
+                      "Replacing missing values with central tendency statistics is a standard, straightforward strategy for numerical and categorical data.\n\nIf a feature or sample has too much missing data (e.g., >70%), removing it entirely can prevent introducing excessive noise or bias.\n\nAdvanced imputation methods like K-Nearest Neighbors or Multivariate Imputation by Chained Equations use relationships between other features to estimate missing data accurately.",
+                    img: "",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        progress: {},
+      };
+      let closeDrawer = () => {};
+      let openDrawer = () => {};
+      let DB = {};
+      let uploadedImageBase64 = "";
+
+      function loadDB() {
+        try {
+          const raw = localStorage.getItem("quizforge_db");
+          DB = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+        } catch {
+          DB = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        }
+      }
+
+      function saveDB() {
+        localStorage.setItem("quizforge_db", JSON.stringify(DB));
+      }
+
+      function getExamStatus(examId) {
+        const p = DB.progress[examId];
+        if (!p) return "new";
+        return p.completed ? "done" : "inprog";
+      }
+
+      // ─── Runtime App Context Matrix ───
+      let quizState = null;
+      let currentPage = "home";
+      let adminForm = {
+        subjectId: null,
+        examId: null,
+        type: "mcq",
+        choices: [],
+        editingQid: null,
+      };
+      let reviewMistakesOnly = false;
+
+      function handleExamCardClick(subjectId, examId) {
+        const attemptRecord = DB.progress[examId];
+        if (attemptRecord && attemptRecord.completed) {
+          renderLastAttemptInterceptScreen(subjectId, examId, attemptRecord);
+        } else {
+          startQuiz(subjectId, examId, true);
+        }
+      }
+
+      function renderLastAttemptInterceptScreen(subjectId, examId, record) {
+        currentPage = "intercept";
+        const container = document.getElementById("page-content");
+        if (!container) return;
+
+        const subj = DB.subjects.find((s) => s.id === subjectId);
+        const exam = subj?.exams.find((e) => e.id === examId);
+        document.getElementById("breadcrumb").innerHTML =
+          `Quiz Entry Controls › <span>${escHtml(exam.name)} History</span>`;
+
+        const pct = Math.round((record.score / record.total) * 100);
+
+        container.innerHTML = `
+          <div class="card" style="text-align:center; padding: 40px 20px;">
+            <h2 style="font-size:1.5rem; margin-bottom:8px;">Attempt Found for ${escHtml(exam.name)}</h2>
+            <p style="color:var(--txt2); font-size:0.9rem; margin-bottom:24px;">You have already completed this exam module performance tracker.</p>
+            
+            <div style="display:inline-flex; gap:30px; margin-bottom:30px; background:var(--bg3); padding:16px 32px; border-radius:12px;">
+              <div>
+                <div style="font-size:1.8rem; font-weight:800; color:var(--accent); line-height:1.1">${record.score}/${record.total}</div>
+                <div style="font-size:0.75rem; text-transform:uppercase; color:var(--txt2); font-weight:600; margin-top:4px;">Last Score</div>
+              </div>
+              <div style="border-left:1px solid var(--border)"></div>
+              <div>
+                <div style="font-size:1.8rem; font-weight:800; color:var(--accent2); line-height:1.1">${pct}%</div>
+                <div style="font-size:0.75rem; text-transform:uppercase; color:var(--txt2); font-weight:600; margin-top:4px;">Accuracy</div>
+              </div>
+            </div>
+            
+            <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="loadSavedAttemptIntoQuizState('${subjectId}', '${examId}')">🔎 Review Last Attempt</button>
+              <button class="btn btn-secondary" onclick="startQuiz('${subjectId}', '${examId}', true)">🔄 Retake Exam (Shuffle Everything)</button>
+              <button class="btn btn-secondary" onclick="renderPage('home')" style="background:transparent; border-color:transparent;">Back to Menu</button>
+            </div>
+          </div>
+        `;
+      }
+
+      function loadSavedAttemptIntoQuizState(subjectId, examId) {
+        const subj = DB.subjects.find((s) => s.id === subjectId);
+        const exam = subj?.exams.find((e) => e.id === examId);
+        const record = DB.progress[examId];
+
+        quizState = {
+          subjectId,
+          examId,
+          subjectName: subj.name,
+          examName: exam.name,
+          questions: [...exam.questions],
+          answers: { ...(record.answers || {}) },
+          submitted: Object.fromEntries(
+            Object.keys(record.answers || {}).map((k) => [k, true]),
+          ),
+          score: record.score,
+          total: record.total,
+          finished: true,
+        };
+
+        reviewMistakesOnly = false;
+        renderPage("summary");
+      }
+
+      function startQuiz(subjectId, examId, shuffle = true) {
+        const subj = DB.subjects.find((s) => s.id === subjectId);
+        const exam = subj?.exams.find((e) => e.id === examId);
+        if (!exam || !exam.questions.length) {
+          showToast("No questions available in this shell.", "error");
+          return;
+        }
+
+        let questions = JSON.parse(JSON.stringify(exam.questions));
+
+        if (shuffle) {
+          questions = shuffleArr(questions);
+          questions.forEach((q) => {
+            if (q.type !== "tf" && q.choices && q.choices.length) {
+              q.choices = shuffleArr(q.choices);
+            }
+          });
+        }
+
+        quizState = {
+          subjectId,
+          examId,
+          subjectName: subj.name,
+          examName: exam.name,
+          questions,
+          answers: {},
+          submitted: {},
+          score: 0,
+          total: questions.length,
+          finished: false,
+        };
+
+        const saved = DB.progress[examId];
+        if (saved && !shuffle) {
+          quizState.answers = { ...(saved.answers || {}) };
+          quizState.submitted = Object.fromEntries(
+            Object.keys(quizState.answers).map((k) => [k, true]),
+          );
+        }
+
+        renderPage("quiz");
+      }
+
+      function finishQuiz() {
+        quizState.finished = true;
+
+        let correct = 0;
+        quizState.questions.forEach((q) => {
+          const ans = quizState.answers[q.id] || [];
+          if (arraysEqual(ans.sort(), [...q.correct].sort())) correct++;
+        });
+
+        quizState.score = correct;
+
+        DB.progress[quizState.examId] = {
+          score: correct,
+          total: quizState.total,
+          answers: { ...quizState.answers },
+          completed: true,
+          completedAt: Date.now(),
+        };
+
+        saveDB();
+        buildTopnavSubjects();
+        reviewMistakesOnly = false;
+        renderPage("summary");
+      }
+
+      // ─── Unified View Router ───
+      function renderPage(page) {
+        currentPage = page;
+        const container = document.getElementById("page-content");
+        if (!container) return;
+        container.innerHTML = "";
+
+        document
+          .querySelectorAll("[data-nav]")
+          .forEach((b) => b.classList.remove("active"));
+        document
+          .querySelectorAll(`[data-nav="${page}"]`)
+          .forEach((b) => b.classList.add("active"));
+
+        switch (page) {
+          case "home":
+            renderHome(container);
+            break;
+          case "quiz":
+            renderQuiz(container);
+            break;
+          case "summary":
+            renderSummary((c) =>
+              document.getElementById("page-content").appendChild(c),
+            );
+            break;
+          case "admin":
+            renderAdmin(container);
+            break;
+          case "data":
+            renderData(container);
+            break;
+        }
+      }
+
+      // ─── Menu Engine ───
+      function renderHome(c) {
+        document.getElementById("breadcrumb").innerHTML = "Menu";
+
+        c.innerHTML = `
+          <div class="card" style="border-color: var(--accent2); background: var(--bg2); margin-bottom: 24px; padding: 18px 22px; text-align: center;">
+            <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; display: inline-flex; align-items: center; gap: 8px; justify-content: center; width: 100%;">
+              Brain Snack
+            </h2>
+            <p style="color: var(--txt2); font-size: 0.95rem; font-weight: 600; line-height: 1.4;">
+              Because apparently you forgot. <span style="color: var(--danger); font-weight: 700;">Again.</span>
+            </p>
+          </div>
+          <div class="section-head"><h2>Subject Catalog Structure</h2></div>
+          ${
+            DB.subjects
+              .map(
+                (s) => `
+            <div style="margin-bottom:24px">
+              <div class="subject-folder-label"> <?xml version="1.0" encoding="UTF-8"?>
+<svg width="30" height="30" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M870.161 175.482L857.161 143.982C812.942 138.892 789.883 139.665 750.161 143.982C498.617 109.388 399.661 96.9823 388.161 103.982C376.661 110.982 312.661 238.48 280.161 329.482C235.614 417.766 225.368 445.882 223.661 471.982C199.223 503.314 165.354 564.007 114.661 651.482C96.7956 676.688 97.7057 688.568 100.661 709.482C142.661 809.482 258.661 796.982 708.161 923.982H716.161C736.84 894.323 759.661 822.982 775.661 756.982C826.161 643.482 836.948 606.115 868.161 506.482C902.661 386.482 912.161 346.482 924.161 303.982C920.554 291.345 916.165 285.14 906.161 274.482C878.096 275.353 868.937 276.441 859.161 278.982L859.661 277.482V257.982L851.161 256.982L862.661 232.982L868.161 205.482L852.161 204.482L870.161 175.482Z" stroke="white" stroke-width="61"/>
+<path d="M870.161 175.482L857.161 143.982C812.942 138.892 789.883 139.665 750.161 143.982C498.617 109.388 399.661 96.9823 388.161 103.982C376.661 110.982 312.661 238.48 280.161 329.482C235.614 417.766 225.368 445.882 223.661 471.982C199.223 503.314 165.354 564.007 114.661 651.482C96.7956 676.688 97.7057 688.568 100.661 709.482C142.661 809.482 258.661 796.982 708.161 923.982H716.161C736.84 894.323 759.661 822.982 775.661 756.982C826.161 643.482 836.948 606.115 868.161 506.482C902.661 386.482 912.161 346.482 924.161 303.982C920.554 291.345 916.165 285.14 906.161 274.482C878.096 275.353 868.937 276.441 859.161 278.982L859.661 277.482V257.982L851.161 256.982L862.661 232.982L868.161 205.482L852.161 204.482L870.161 175.482Z" stroke="#351D10" stroke-width="23"/>
+<path d="M116.661 670.982H231.661L653.161 293.482L894.161 300.982L842.161 484.982L801 601.5L697.161 889.482L231.661 785.982L122.161 737.482L116.661 670.982Z" fill="#672400"/>
+<path d="M122.161 692.982L235 736L343.661 763.982L642.661 876.982L231.661 785.982L122.161 737.482V692.982Z" fill="#84370E"/>
+<path d="M219.161 762.982C153.321 746.802 125.031 717.482 121.661 684.482C116.505 728.611 142.503 754.186 219.161 780.982L702.661 903.482C801.996 673.545 850.062 543.031 910.661 304.982L899.661 289.482L832.161 290.982V304.982L887.161 308.982C864.329 373.629 848.161 432.482 832.161 489.482C797.122 589.707 782.953 644.148 743.661 746.482C724.405 797.924 713.961 830.612 690.161 880.482C582.66 852.982 393.578 806.55 219.161 762.982Z" fill="url(#paint0_linear_2_2541)"/>
+<path d="M219.161 762.982C153.321 746.802 125.031 717.482 121.661 684.482C116.505 728.611 142.503 754.186 219.161 780.982L702.661 903.482C694.409 891 688.39 884.408 669.661 874.982C562.16 847.482 393.578 806.55 219.161 762.982Z" fill="#A2716A"/>
+<path d="M675.661 875.982C535.161 842.982 342.661 782.482 187.161 752.482L200.661 737.982L262.161 672.482L748.161 275.982L870.661 294.982L876.661 309.982C756.161 680.482 712.661 846.482 675.661 875.982Z" fill="url(#paint1_linear_2_2541)"/>
+<path d="M670.161 857.982C570.661 837.482 376.661 767.482 200.661 737.982L262.161 672.482L748.161 275.982L870.661 294.982C750.161 665.482 707.161 828.482 670.161 857.982Z" fill="url(#paint2_linear_2_2541)"/>
+<path d="M657.661 823.482C550.661 823.482 363.661 754.982 204.661 735.482L213.661 718.982L261.161 653.482L723.161 242.982L859.661 257.982V277.482C802.161 450.982 755.161 617.482 657.661 823.482Z" fill="url(#paint3_linear_2_2541)"/>
+<path d="M652.161 802.982C545.161 802.982 372.661 738.482 213.661 718.982L261.161 653.482L723.161 242.982L859.661 257.982C789.661 451.982 739.161 633.482 652.161 802.982Z" fill="url(#paint4_linear_2_2541)"/>
+<path d="M643.661 787.982C533.661 802.982 434.161 724.982 213.661 713.982L200.161 700.982L220.161 678.482L731.661 218.482L868.161 205.482L862.661 232.982C787.161 386.482 703.161 662.982 643.661 787.982Z" fill="url(#paint5_linear_2_2541)"/>
+<path d="M637.161 771.982C527.161 786.982 420.661 711.982 200.161 700.982L220.161 678.482L738.161 196.982L868.161 205.482C787.622 352.729 691.578 640.679 637.161 771.982Z" fill="url(#paint6_linear_2_2541)"/>
+<path d="M667.5 874L209.7 726.3L207 731L187 752.5C300 775 429.595 808.83 667.5 874Z" fill="white" fill-opacity="0.3"/>
+<path d="M870.161 175.482L857.161 143.982C812.942 138.893 789.883 139.665 750.161 143.982C498.617 109.388 403.161 91.4825 388.161 103.982C373.161 116.482 312.661 238.48 280.161 329.482C235.614 417.766 225.368 445.882 223.661 471.982C199.223 503.315 165.354 564.008 114.661 651.483C96.7956 676.688 97.7057 688.568 100.661 709.483C142.661 809.483 258.661 796.983 708.161 923.983H716.161C736.84 894.324 762.161 824.483 775.661 756.983C818.661 648.982 832.948 597.615 864.161 497.982C902.865 380.015 906.161 330.482 924.161 303.982C920.554 291.345 916.165 285.14 906.161 274.482C878.096 275.353 868.937 276.442 859.161 278.982L855.161 290.982H897.661C903.103 295.209 905.055 298.02 906.161 303.982C883.462 384.214 879.357 430.328 850.661 493.482C812.431 622.676 795.937 665.153 762.661 748.483C747.563 809.849 727.07 847.332 701.661 902.483C357.661 806.483 122.448 783.901 122.661 696.483C122.844 621.483 394.661 802.983 633.661 748.483C730.161 515.483 717.661 414.482 870.161 175.482Z" fill="url(#paint7_linear_2_2541)"/>
+<path d="M870.161 175.483L865.161 163.482C760.786 262.982 623.661 731.982 623.661 731.982C349.661 774.982 181.161 622.982 114.661 651.483C96.7956 676.688 97.7057 688.568 100.661 709.483C142.661 809.483 258.661 796.983 708.161 923.983H716.161C736.84 894.324 762.161 824.483 775.661 756.983C824.661 651.483 838.948 601.115 870.161 501.482C906.161 386.568 915.161 327.482 924.161 303.983C920.554 291.345 916.165 285.141 906.161 274.483C878.096 275.353 868.937 276.442 859.161 278.983L855.161 290.983H897.661C903.103 295.21 905.055 298.02 906.161 303.983C880.602 381.257 873.68 423.042 848.161 489.482C813.67 590.941 793.28 647.78 757.661 748.483C742.563 809.849 727.07 847.332 701.661 902.483C357.661 806.483 122.448 783.901 122.661 696.483C122.844 621.483 394.661 802.983 633.661 748.483C730.161 515.483 717.661 414.482 870.161 175.483Z" fill="url(#paint8_linear_2_2541)"/>
+<defs>
+<linearGradient id="paint0_linear_2_2541" x1="483.999" y1="682.5" x2="940.499" y2="349.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#51291D"/>
+<stop offset="1" stop-color="#301915"/>
+</linearGradient>
+<linearGradient id="paint1_linear_2_2541" x1="356.273" y1="607.618" x2="862.972" y2="346.179" gradientUnits="userSpaceOnUse">
+<stop stop-color="#AE8658"/>
+<stop offset="1" stop-color="#A06A48"/>
+</linearGradient>
+<linearGradient id="paint2_linear_2_2541" x1="256.166" y1="684.023" x2="856.575" y2="342.886" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E1C8A9"/>
+<stop offset="1" stop-color="#DBB393"/>
+</linearGradient>
+<linearGradient id="paint3_linear_2_2541" x1="365.312" y1="563.84" x2="850.32" y2="318.128" gradientUnits="userSpaceOnUse">
+<stop stop-color="#AE8658"/>
+<stop offset="1" stop-color="#A06A48"/>
+</linearGradient>
+<linearGradient id="paint4_linear_2_2541" x1="267.177" y1="635.599" x2="845.498" y2="306.336" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E1C8A9"/>
+<stop offset="1" stop-color="#DBB393"/>
+</linearGradient>
+<linearGradient id="paint5_linear_2_2541" x1="364" y1="528.5" x2="856" y2="276" gradientUnits="userSpaceOnUse">
+<stop stop-color="#AE8658"/>
+<stop offset="1" stop-color="#A06A48"/>
+</linearGradient>
+<linearGradient id="paint6_linear_2_2541" x1="255.5" y1="601.5" x2="852.452" y2="260.395" gradientUnits="userSpaceOnUse">
+<stop stop-color="#E1C8A9"/>
+<stop offset="1" stop-color="#DBB393"/>
+</linearGradient>
+<linearGradient id="paint7_linear_2_2541" x1="697.661" y1="471.482" x2="143.661" y2="328.982" gradientUnits="userSpaceOnUse">
+<stop stop-color="#7D3C33"/>
+<stop offset="1" stop-color="#56302A"/>
+</linearGradient>
+<linearGradient id="paint8_linear_2_2541" x1="128.5" y1="260" x2="993" y2="611.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#82473B"/>
+<stop offset="1" stop-color="#542B23"/>
+</linearGradient>
+</defs>
+</svg>
+${escHtml(s.name)}</div>
+              <div class="exams-grid">
+                ${
+                  s.exams
+                    .map((e) => {
+                      const st = getExamStatus(e.id);
+                      const p = DB.progress[e.id];
+                      const pct = p ? Math.round((p.score / p.total) * 100) : 0;
+                      return `
+                    <div class="exam-card" onclick="handleExamCardClick('${s.id}','${e.id}')">
+                      <h3>${escHtml(e.name)}</h3>
+                      <div class="meta"><span> ${e.questions.length} items</span></div>
+                      <span class="status-badge ${st}">${st === "done" ? `✓ Done (${pct}%)` : st === "inprog" ? "⏸ Studying" : "○ Unstarted"}</span>
+                    </div>
+                  `;
+                    })
+                    .join("") ||
+                  '<p style="color:var(--txt2); font-size:1rem;">No configured exams.</p>'
+                }
+              </div>
+            </div>
+          `,
+              )
+              .join("") ||
+            '<div class="empty-state"><h3>No Content Configured</h3></div>'
+          }
+        `;
+      }
+
+      // ─── Active Core Quiz Testing Layout ───
+      function renderQuiz(c) {
+        if (!quizState) {
+          renderPage("home");
+          return;
+        }
+        document.getElementById("breadcrumb").innerHTML =
+          `Quiz Management › <span>${escHtml(quizState.examName)}</span>`;
+
+        c.innerHTML = `
+          <div id="quiz-header">
+            <div class="quiz-title">${escHtml(quizState.examName)}</div>
+            <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog" style="width:0%"></div></div>
+            <button class="btn btn-secondary btn-sm" onclick="confirmFinish()">End Exam</button>
+          </div>
+          <div id="question-list"></div>
+        `;
+
+        const qList = c.querySelector("#question-list");
+        quizState.questions.forEach((q, i) => {
+          const card = document.createElement("div");
+          card.className = "question-card";
+          const isSubmitted = quizState.submitted[q.id];
+          const savedAns = quizState.answers[q.id] || [];
+
+          card.innerHTML = `
+            <div class="q-number">Question ${i + 1} <span class="q-type-badge">${q.type.toUpperCase()}</span></div>
+            <div class="q-text">${renderMarkdown(q.text)}</div>
+            ${q.img ? `<div class="q-image-container"><img src="${q.img}" class="q-image-preview" alt="Question illustration asset"></div>` : ""}
+            <div class="choices" id="choices-${q.id}"></div>
+            <div class="q-actions">
+              <span>${q.type === "multi" ? "💡 Multi-select (Choose 2 or more)" : ""}</span>
+              <button class="btn btn-primary btn-sm" id="btn-${q.id}" onclick="submitQuestion('${q.id}')" ${isSubmitted ? 'disabled style="opacity:0.5;"' : ""}>
+                ${isSubmitted ? "Submitted" : "Check"}
+              </button>
+            </div>
+            <div id="fb-${q.id}"></div>
+          `;
+
+          const choicesBox = card.querySelector(`#choices-${q.id}`);
+          q.choices.forEach((ch) => {
+            const lbl = document.createElement("label");
+            lbl.className = `choice-label ${q.type === "multi" ? "checkbox" : "radio"}`;
+            const isSelected = savedAns.includes(ch.id);
+
+            lbl.innerHTML = `
+              <input type="${q.type === "multi" ? "checkbox" : "radio"}" name="r-${q.id}" value="${ch.id}" ${isSelected ? "checked" : ""} ${isSubmitted ? "disabled" : ""}>
+              <span class="choice-custom">${q.type === "multi" ? "✓" : "●"}</span>
+              <span class="choice-text">${renderInlineMarkdown(ch.text)}</span>
+              <span class="choice-icon"></span>
+            `;
+
+            if (isSelected) lbl.classList.add("selected");
+
+            if (!isSubmitted) {
+              lbl.querySelector("input").addEventListener("change", (e) => {
+                if (q.type !== "multi") {
+                  choicesBox
+                    .querySelectorAll(".choice-label")
+                    .forEach((l) => l.classList.remove("selected"));
+                }
+                lbl.classList.toggle("selected", e.target.checked);
+
+                const checked = [];
+                choicesBox
+                  .querySelectorAll("input:checked")
+                  .forEach((i) => checked.push(i.value));
+                quizState.answers[q.id] = checked;
+              });
+            } else {
+              lbl.classList.add("disabled");
+              if (q.correct.includes(ch.id)) lbl.classList.add("correct");
+              else if (isSelected) lbl.classList.add("incorrect");
+            }
+            choicesBox.appendChild(lbl);
+          });
+
+          qList.appendChild(card);
+          if (isSubmitted)
+            showFeedbackBox(q, savedAns, card.querySelector(`#fb-${q.id}`));
+        });
+        updateProgressFill();
+      }
+
+      function submitQuestion(qId) {
+        const q = quizState.questions.find((x) => x.id === qId);
+        if (!q) return;
+        const ans = quizState.answers[q.id] || [];
+        if (!ans.length) {
+          showToast("Select an choice first!", "error");
+          return;
+        }
+
+        quizState.submitted[qId] = true;
+        saveDB();
+        updateProgressFill();
+        renderPage("quiz");
+      }
+
+      function showFeedbackBox(q, ans, box) {
+        const isCorrect = arraysEqual(ans.sort(), [...q.correct].sort());
+        box.innerHTML = `
+          <div class="feedback-box ${isCorrect ? "correct" : "incorrect"}">
+            <div class="feedback-title">${isCorrect ? "✓ Correct" : "✗ Incorrect"}</div>
+            ${q.explanation ? `<div class="explanation">${renderMarkdown(q.explanation)}</div>` : ""}
+          </div>
+        `;
+      }
+
+      function updateProgressFill() {
+        if (!quizState) return;
+        const done = Object.keys(quizState.submitted).length;
+        const fill = document.getElementById("quiz-prog");
+        if (fill)
+          fill.style.width = `${(done / quizState.questions.length) * 100}%`;
+      }
+
+      function confirmFinish() {
+        showModal("Finish Test", "Are you sure you want to grade and exit?", [
+          { label: "Return", cls: "btn-secondary", action: closeModal },
+          {
+            label: "Grade & Finish",
+            cls: "btn-primary",
+            action: () => {
+              closeModal();
+              finishQuiz();
+            },
+          },
+        ]);
+      }
+
+      // ─── Performance Summary Framework & Live Filtering Toggle ───
+      function renderSummary(appendCallback) {
+        document.getElementById("breadcrumb").innerHTML =
+          "Evaluation Framework";
+        const pct = Math.round((quizState.score / quizState.total) * 100);
+
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = `
+          <div class="summary-hero">
+            <div class="summary-score">${quizState.score}<span>/${quizState.total}</span></div>
+            <div style="margin-top:5px; font-weight:500;">Score Metrics Evaluated: Total accuracy evaluated at ${pct}%</div>
+          </div>
+          <div style="margin-bottom:15px; display:flex; gap:10px; align-items:center;">
+            <button class="btn btn-primary" onclick="startQuiz(quizState.subjectId, quizState.examId, true)">🔄 Retake Shuffled</button>
+            <button class="btn btn-secondary" onclick="renderPage('home')">Menu</button>
+            
+            <label class="review-toggle" id="mistake-toggle-element">
+              <div class="toggle-switch ${reviewMistakesOnly ? "on" : ""}" id="mistake-toggle-switch"></div>
+              <span>Review Mistakes Only</span>
+            </label>
+          </div>
+          <div id="summary-cards-box"></div>
+        `;
+
+        appendCallback(wrapper);
+
+        document
+          .getElementById("mistake-toggle-element")
+          .addEventListener("click", () => {
+            reviewMistakesOnly = !reviewMistakesOnly;
+            document
+              .getElementById("mistake-toggle-switch")
+              .classList.toggle("on", reviewMistakesOnly);
+            generateSummaryQuestionCards();
+          });
+
+        generateSummaryQuestionCards();
+      }
+
+      function generateSummaryQuestionCards() {
+        const container = document.getElementById("summary-cards-box");
+        if (!container) return;
+        container.innerHTML = "";
+
+        let renderedCount = 0;
+
+        quizState.questions.forEach((q, idx) => {
+          const ans = quizState.answers[q.id] || [];
+          const isCorrect = arraysEqual(ans.sort(), [...q.correct].sort());
+
+          if (reviewMistakesOnly && isCorrect) return;
+          renderedCount++;
+
+          const card = document.createElement("div");
+          card.className = "question-card";
+
+          card.innerHTML = `
+            <div class="q-number">Q${idx + 1} <span style="margin-left:auto; color:${isCorrect ? "var(--success)" : "var(--danger)"}">${isCorrect ? "Correct" : "Missed"}</span></div>
+            <div class="q-text">${renderMarkdown(q.text)}</div>
+            ${q.img ? `<div class="q-image-container"><img src="${q.img}" class="q-image-preview" alt="Historical verification review asset"></div>` : ""}
+            <div class="choices">
+              ${q.choices
+                .map((ch) => {
+                  const choiceSelected = ans.includes(ch.id);
+                  const choiceCorrect = q.correct.includes(ch.id);
+                  let matchCls = "";
+                  if (choiceSelected && choiceCorrect) matchCls = "correct";
+                  else if (choiceSelected && !choiceCorrect)
+                    matchCls = "incorrect";
+                  else if (!choiceSelected && choiceCorrect)
+                    matchCls = "show-correct";
+
+                  return `
+                  <div class="choice-label disabled ${matchCls}">
+                    <span class="choice-text">${renderInlineMarkdown(ch.text)}</span>
+                  </div>
+                `;
+                })
+                .join("")}
+            </div>
+            <div class="feedback-box ${isCorrect ? "correct" : "incorrect"}">
+              <div><strong>Explanation:</strong> ${q.explanation ? renderMarkdown(q.explanation) : "No metrics documented."}</div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        if (renderedCount === 0 && reviewMistakesOnly) {
+          container.innerHTML = `
+            <div class="card" style="text-align:center; padding: 40px; color:var(--txt2);">
+              <h3 style="color:var(--success); margin-bottom:6px;">🎉 Zero Mistakes Mapped!</h3>
+              <p style="font-size:0.88rem;">You aced this entire quiz assessment stack flawlessly.</p>
+            </div>
+          `;
+        }
+      }
+
+      // ─── Admin Customization Menu Panel ───
+      function renderAdmin(c) {
+        document.getElementById("breadcrumb").innerHTML =
+          "System Customization Controls";
+        c.innerHTML = `
+          <div class="admin-tabs">
+            <button class="admin-tab active" id="tab-q" onclick="switchAdminTab('questions')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 23" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers-plus-icon lucide-layers-plus"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 .83.18 2 2 0 0 0 .83-.18l8.58-3.9a1 1 0 0 0 0-1.831z"/><path d="M16 17h6"/><path d="M19 14v6"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 .825.178"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l2.116-.962"/></svg> Create Question</button>
+            <button class="admin-tab" id="tab-m" onclick="switchAdminTab('manage')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 23" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg> Modify &amp; Delete Questions</button>
+            <button class="admin-tab" id="tab-s" onclick="switchAdminTab('structure')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 23" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-tree-icon lucide-folder-tree"><path d="M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z"/><path d="M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z"/><path d="M3 5a2 2 0 0 0 2 2h3"/><path d="M3 3v13a2 2 0 0 0 2 2h3"/></svg> Manage Structure</button>
+          </div>
+          <div id="admin-workspace"></div>
+        `;
+        switchAdminTab("questions");
+      }
+
+      function switchAdminTab(t) {
+        if (t !== "questions") adminForm.editingQid = null;
+
+        document
+          .querySelectorAll(".admin-tab")
+          .forEach((b) => b.classList.remove("active"));
+        const activeBtn = document.getElementById(
+          t === "questions" ? "tab-q" : t === "manage" ? "tab-m" : "tab-s",
+        );
+        if (activeBtn) activeBtn.classList.add("active");
+
+        const wrk = document.getElementById("admin-workspace");
+        if (!wrk) return;
+
+        if (t === "structure") {
+          renderStructureTab(wrk);
+        } else if (t === "manage") {
+          renderManageTab(wrk);
+        } else {
+          renderQuestionFormTab(wrk);
+        }
+      }
+
+      function renderStructureTab(wrk) {
+        wrk.innerHTML = `
+          <div class="card">
+            <h3>Configure New Master Subject Context</h3>
+            <input type="text" id="add-subj-name" class="form-input" placeholder="e.g., Advanced Econometrics" style="margin: 10px 0;">
+            <button class="btn btn-primary" onclick="saveSubjectStructure()">Save Subject</button>
+          </div>
+          <div class="card" style="margin-top:15px;">
+            <h3>Append New Exam Set</h3>
+            <select id="add-exam-parent" class="form-input" style="margin:10px 0;"></select>
+            <input type="text" id="add-exam-name" class="form-input" placeholder="e.g., Module 2 Practical Quiz">
+            <button class="btn btn-primary" onclick="saveExamStructure()" style="margin-top:10px;">Save Exam Shell</button>
+          </div>
+          <div class="card" style="margin-top:15px;">
+            <h3 style="margin-bottom:12px;">Existing Subjects &amp; Exams</h3>
+            <div id="structure-list"></div>
+          </div>
+        `;
+        const sel = wrk.querySelector("#add-exam-parent");
+        sel.innerHTML = DB.subjects
+          .map((s) => `<option value="${s.id}">${escHtml(s.name)}</option>`)
+          .join("");
+
+        renderStructureList();
+      }
+
+      function renderStructureList() {
+        const box = document.getElementById("structure-list");
+        if (!box) return;
+
+        if (!DB.subjects.length) {
+          box.innerHTML =
+            '<p style="color:var(--txt2); font-size:0.85rem;">No subjects configured yet.</p>';
+          return;
+        }
+
+        box.innerHTML = DB.subjects
+          .map(
+            (s) => `
+            <div style="border:1px solid var(--border); border-radius:9px; padding:12px; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:700; font-size:0.92rem; flex:1;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-bookmark-icon lucide-folder-bookmark"><path d="M12 6v8l3-3 3 3V6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></svg> ${escHtml(s.name)}</span>
+                <button class="btn btn-secondary btn-sm" onclick="renameSubject('${s.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-pen-icon lucide-folder-pen"><path d="M2 11.5V5a2 2 0 0 1 2-2h3.9c.7 0 1.3.3 1.7.9l.8 1.2c.4.6 1 .9 1.7.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-9.5"/><path d="M11.378 13.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>Rename</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteSubject('${s.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-x-icon lucide-folder-x"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><path d="m9.5 10.5 5 5"/><path d="m14.5 10.5-5 5"/></svg>Delete</button>
+              </div>
+              ${
+                s.exams.length
+                  ? `<div style="margin-top:10px; padding-left:18px; display:flex; flex-direction:column; gap:8px;">
+                      ${s.exams
+                        .map(
+                          (e) => `
+                        <div style="display:flex; align-items:center; gap:10px;">
+                          <span style="font-size:0.85rem; flex:1;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-pen-line-icon lucide-file-pen-line"><path d="M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"/><path d="M14.487 7.858A1 1 0 0 1 14 7V2"/><path d="M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"/><path d="M8 18h1"/></svg> ${escHtml(e.name)} <span style="color:var(--txt2); font-size:0.75rem;">(${e.questions.length} questions)</span></span>
+                          <button class="btn btn-secondary btn-sm" onclick="renameExam('${s.id}','${e.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-pen-icon lucide-file-pen"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>Rename</button>
+                          <button class="btn btn-danger btn-sm" onclick="deleteExam('${s.id}','${e.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sticky-note-x-icon lucide-sticky-note-x"><path d="M15 3v5a1 1 0 0 0 1 1h5"/><path d="m16 16 5 5"/><path d="M21 12V9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7"/><path d="m21 16-5 5"/></svg>Delete</button>
+                        </div>
+                      `,
+                        )
+                        .join("")}
+                    </div>`
+                  : `<p style="margin-top:8px; padding-left:18px; font-size:0.8rem; color:var(--txt2);">No exam shells in this subject.</p>`
+              }
+            </div>
+          `,
+          )
+          .join("");
+      }
+
+      function renameSubject(sid) {
+        const subj = DB.subjects.find((s) => s.id === sid);
+        if (!subj) return;
+        showInputModal("Rename Subject", "Subject Name", subj.name, (val) => {
+          subj.name = val;
+          saveDB();
+          buildTopnavSubjects();
+          renderStructureList();
+          showToast("Subject renamed.", "success");
+        });
+      }
+
+      function renameExam(sid, eid) {
+        const subj = DB.subjects.find((s) => s.id === sid);
+        const exam = subj?.exams.find((e) => e.id === eid);
+        if (!exam) return;
+        showInputModal("Rename Exam", "Exam Name", exam.name, (val) => {
+          exam.name = val;
+          saveDB();
+          buildTopnavSubjects();
+          renderStructureList();
+          showToast("Exam renamed.", "success");
+        });
+      }
+
+      function deleteSubject(sid) {
+        const subj = DB.subjects.find((s) => s.id === sid);
+        if (!subj) return;
+        showModal(
+          "Delete Subject",
+          `This will permanently delete <strong>${escHtml(subj.name)}</strong> and all ${subj.exams.length} exam shell(s) inside it, including every saved question and progress record. Are you sure?`,
+          [
+            { label: "Cancel", cls: "btn-secondary", action: closeModal },
+            {
+              label: "Delete Subject",
+              cls: "btn-danger",
+              action: () => {
+                subj.exams.forEach((e) => delete DB.progress[e.id]);
+                DB.subjects = DB.subjects.filter((s) => s.id !== sid);
+
+                if (adminForm.subjectId === sid) {
+                  adminForm.subjectId = null;
+                  adminForm.examId = null;
+                }
+                if (quizState?.subjectId === sid) quizState = null;
+
+                saveDB();
+                closeModal();
+                showToast("Subject deleted.", "success");
+                buildTopnavSubjects();
+                renderStructureTab(document.getElementById("admin-workspace"));
+              },
+            },
+          ],
+        );
+      }
+
+      function deleteExam(sid, eid) {
+        const subj = DB.subjects.find((s) => s.id === sid);
+        const exam = subj?.exams.find((e) => e.id === eid);
+        if (!exam) return;
+        showModal(
+          "Delete Exam",
+          `This will permanently delete <strong>${escHtml(exam.name)}</strong>, including all ${exam.questions.length} question(s) and any saved progress. Are you sure?`,
+          [
+            { label: "Cancel", cls: "btn-secondary", action: closeModal },
+            {
+              label: "Delete Exam",
+              cls: "btn-danger",
+              action: () => {
+                delete DB.progress[eid];
+                subj.exams = subj.exams.filter((e) => e.id !== eid);
+
+                if (adminForm.examId === eid) adminForm.examId = null;
+                if (quizState?.examId === eid) quizState = null;
+
+                saveDB();
+                closeModal();
+                showToast("Exam deleted.", "success");
+                buildTopnavSubjects();
+                renderStructureTab(document.getElementById("admin-workspace"));
+              },
+            },
+          ],
+        );
+      }
+
+      function renderManageTab(wrk) {
+        wrk.innerHTML = `
+          <div class="card">
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <select id="manage-sid" class="form-input"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Exam Shell</label>
+              <select id="manage-eid" class="form-input"></select>
+            </div>
+          </div>
+          <div class="card" style="margin-top:15px;">
+            <h3 style="margin-bottom:10px;">Saved Questions</h3>
+            <div id="manage-q-list"></div>
+          </div>
+        `;
+
+        const sSel = wrk.querySelector("#manage-sid");
+        const eSel = wrk.querySelector("#manage-eid");
+        sSel.innerHTML = DB.subjects
+          .map((s) => `<option value="${s.id}">${escHtml(s.name)}</option>`)
+          .join("");
+
+        const refreshExams = () => {
+          const matchSubj = DB.subjects.find((s) => s.id === sSel.value);
+          eSel.innerHTML =
+            matchSubj && matchSubj.exams.length
+              ? matchSubj.exams
+                  .map(
+                    (e) =>
+                      `<option value="${e.id}">${escHtml(e.name)}</option>`,
+                  )
+                  .join("")
+              : '<option value="">No exam shells available</option>';
+          renderManageQuestionList();
+        };
+
+        sSel.addEventListener("change", () => {
+          adminForm.subjectId = sSel.value;
+          refreshExams();
+        });
+        eSel.addEventListener("change", () => {
+          adminForm.examId = eSel.value;
+          renderManageQuestionList();
+        });
+
+        if (
+          adminForm.subjectId &&
+          DB.subjects.find((s) => s.id === adminForm.subjectId)
+        ) {
+          sSel.value = adminForm.subjectId;
+        }
+        refreshExams();
+        if (adminForm.examId) {
+          const exists = Array.from(eSel.options).some(
+            (o) => o.value === adminForm.examId,
+          );
+          if (exists) eSel.value = adminForm.examId;
+        }
+        renderManageQuestionList();
+      }
+
+      function renderManageQuestionList() {
+        const sid = document.getElementById("manage-sid")?.value;
+        const eid = document.getElementById("manage-eid")?.value;
+        const listBox = document.getElementById("manage-q-list");
+        if (!listBox) return;
+
+        const subj = DB.subjects.find((s) => s.id === sid);
+        const exam = subj?.exams.find((e) => e.id === eid);
+        if (!exam) {
+          listBox.innerHTML =
+            '<p style="color:var(--txt2); font-size:0.85rem;">No exam shell selected.</p>';
+          return;
+        }
+        if (!exam.questions.length) {
+          listBox.innerHTML =
+            '<p style="color:var(--txt2); font-size:0.85rem;">No questions saved in this exam yet.</p>';
+          return;
+        }
+
+        const TYPE_LABELS = { mcq: "MCQ", tf: "T/F", multi: "MULTI" };
+        listBox.innerHTML = exam.questions
+          .map((q, idx) => {
+            const sanitizedText = escHtml(q.text);
+            const excerpt =
+              sanitizedText.length > 90
+                ? sanitizedText.slice(0, 90).trim() + "…"
+                : sanitizedText;
+            return `
+            <div style="display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border);">
+              <span class="q-type-badge">${TYPE_LABELS[q.type] || q.type.toUpperCase()}</span>
+              <span style="flex:1; font-size:0.88rem;">${idx + 1}. ${excerpt}</span>
+              <button class="btn btn-secondary btn-sm" onclick="editQuestion('${sid}','${eid}','${q.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-icon lucide-pen"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg> Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteQuestion('${sid}','${eid}','${q.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers-minus-icon lucide-layers-minus"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 .83.18 2 2 0 0 0 .83-.18l8.58-3.9a1 1 0 0 0 0-1.832z"/><path d="M16 17h6"/><path d="M2.003 11.995a1 1 0 0 0 .597.915l8.58 3.91a2 2 0 0 0 .83.18"/><path d="M2.003 16.995a1 1 0 0 0 .597.915l8.58 3.91a2 2 0 0 0 .83.18 2 2 0 0 0 .83-.18l2.11-.96"/><path d="M22.018 12.004a1 1 0 0 1-.598.916l-.177.08"/></svg> Delete</button>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function deleteQuestion(sid, eid, qid) {
+        showModal(
+          "Confirm Removal",
+          "Are you sure you want to permanently remove this question entry?",
+          [
+            { label: "Cancel", cls: "btn-secondary", action: closeModal },
+            {
+              label: "Delete",
+              cls: "btn-danger",
+              action: () => {
+                const subj = DB.subjects.find((s) => s.id === sid);
+                const exam = subj?.exams.find((e) => e.id === eid);
+                if (exam) {
+                  const i = exam.questions.findIndex((q) => q.id === qid);
+                  if (i !== -1) exam.questions.splice(i, 1);
+                }
+                saveDB();
+                closeModal();
+                showToast("Question entry removed.", "success");
+                buildTopnavSubjects();
+                renderManageQuestionList();
+              },
+            },
+          ],
+        );
+      }
+
+      function editQuestion(sid, eid, qid) {
+        adminForm.subjectId = sid;
+        adminForm.examId = eid;
+        adminForm.editingQid = qid;
+        switchAdminTab("questions");
+      }
+
+      function renderQuestionFormTab(wrk) {
+        const isEditing = !!adminForm.editingQid;
+        let qRef = null;
+        uploadedImageBase64 = "";
+
+        if (isEditing) {
+          const subj = DB.subjects.find((s) => s.id === adminForm.subjectId);
+          const exam = subj?.exams.find((e) => e.id === adminForm.examId);
+          qRef = exam?.questions.find((q) => q.id === adminForm.editingQid);
+          if (qRef) {
+            adminForm.type = qRef.type;
+            uploadedImageBase64 = qRef.img || "";
+          }
+        }
+
+        wrk.innerHTML = `
+          <div class="card">
+            ${isEditing ? `<p style="font-size:0.82rem; color:var(--accent); font-weight:700; margin-bottom:10px;">✏️ Editing existing question — saving will overwrite this entry.</p>` : ""}
+            <div class="form-group">
+              <label class="form-label">Target Subject Alignment</label>
+              <select id="form-sid" class="form-input" ${isEditing ? "disabled style='opacity:0.6; cursor:not-allowed;'" : ""}></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Target Exam Shell Alignment</label>
+              <select id="form-eid" class="form-input" ${isEditing ? "disabled style='opacity:0.6; cursor:not-allowed;'" : ""}></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Question Mechanics Mode</label>
+              <select id="form-type" class="form-input" onchange="adaptQuestionFormType(this.value)">
+                <option value="mcq">Single Option Selection (MCQ)</option>
+                <option value="tf">Boolean Constraints (True/False)</option>
+                <option value="multi">Comprehensive Checkbox Compilation (Multi-Select)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Core Prompt Assessment Text (Supports Markdown Strings)</label>
+              <textarea id="form-text" class="form-input" placeholder="Input question body specifications here..."></textarea>
+            </div>
+            
+            
+
+            <div class="form-group">
+              <label class="form-label">Response Assessment Arrays</label>
+              <div id="form-choices-box"></div>
+              <button class="btn btn-secondary btn-sm" id="form-add-btn" onclick="appendChoiceRowInput()" style="margin-top:10px;">+ Append Alternative Choice Option</button>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Explanatory Feedback Context</label>
+              <textarea id="form-expl" class="form-input" placeholder="Document dynamic feedback logic matrices here..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-primary" onclick="commitSavedQuestionToDatabase()">${isEditing ? "💾 Save Updated Changes" : "Append Question Node to Exam"}</button>
+              ${isEditing ? `<button class="btn btn-secondary" onclick="cancelEditQuestion()">Cancel Edit</button>` : ""}
+            </div>
+          </div>
+        `;
+
+        const sSel = wrk.querySelector("#form-sid");
+        const eSel = wrk.querySelector("#form-eid");
+        sSel.innerHTML = DB.subjects
+          .map((s) => `<option value="${s.id}">${escHtml(s.name)}</option>`)
+          .join("");
+
+        const refreshExams = () => {
+          const matchSubj = DB.subjects.find((s) => s.id === sSel.value);
+          eSel.innerHTML =
+            matchSubj && matchSubj.exams.length
+              ? matchSubj.exams
+                  .map(
+                    (e) =>
+                      `<option value="${e.id}">${escHtml(e.name)}</option>`,
+                  )
+                  .join("")
+              : '<option value="">Create an Exam shell first</option>';
+        };
+
+        sSel.addEventListener("change", refreshExams);
+
+        if (
+          adminForm.subjectId &&
+          DB.subjects.find((s) => s.id === adminForm.subjectId)
+        ) {
+          sSel.value = adminForm.subjectId;
+        }
+        refreshExams();
+        if (adminForm.examId) {
+          const exists = Array.from(eSel.options).some(
+            (o) => o.value === adminForm.examId,
+          );
+          if (exists) eSel.value = adminForm.examId;
+        }
+
+        if (isEditing && qRef) {
+          document.getElementById("form-type").value = qRef.type;
+          document.getElementById("form-text").value = qRef.text;
+          document.getElementById("form-expl").value = qRef.explanation || "";
+          adaptQuestionFormType(qRef.type, qRef);
+        } else {
+          adaptQuestionFormType(adminForm.type);
+        }
+        // ─── Activate the Rich Content Composer on text fields ───
+        enhanceTextareaWithRichEditor(document.getElementById("form-text"));
+        enhanceTextareaWithRichEditor(document.getElementById("form-expl"));
+      }
+
+      function cancelEditQuestion() {
+        adminForm.editingQid = null;
+        switchAdminTab("manage");
+      }
+
+      function adaptQuestionFormType(val, prefillQuestion = null) {
+        adminForm.type = val;
+        const box = document.getElementById("form-choices-box");
+        const addBtn = document.getElementById("form-add-btn");
+        if (!box) return;
+        box.innerHTML = "";
+
+        if (val === "tf") {
+          addBtn.style.display = "none";
+          const trueChecked = prefillQuestion?.correct?.includes("true")
+            ? "checked"
+            : "";
+          const falseChecked = prefillQuestion?.correct?.includes("false")
+            ? "checked"
+            : "";
+          box.innerHTML = `
+            <div class="choice-row"><input type="radio" name="tf-correct" value="true" ${trueChecked}> <span>True Option Constraint</span></div>
+            <div class="choice-row"><input type="radio" name="tf-correct" value="false" ${falseChecked}> <span>False Option Constraint</span></div>
+          `;
+        } else {
+          addBtn.style.display = "inline-flex";
+          if (prefillQuestion && prefillQuestion.choices.length) {
+            prefillQuestion.choices.forEach((ch) => {
+              const isCorrect = prefillQuestion.correct.includes(ch.id);
+              appendChoiceRowInput(ch.text, isCorrect);
+            });
+          } else {
+            appendChoiceRowInput();
+            appendChoiceRowInput();
+          }
+        }
+      }
+
+      function appendChoiceRowInput(prefillText = "", prefillChecked = false) {
+        const box = document.getElementById("form-choices-box");
+        if (!box) return;
+        const idx = box.children.length;
+        const div = document.createElement("div");
+        div.className = "choice-row";
+        const inputType = adminForm.type === "multi" ? "checkbox" : "radio";
+        div.innerHTML = `
+          <input type="${inputType}" name="admin-c" value="${idx}" ${prefillChecked ? "checked" : ""}>
+          <input type="text" class="form-input row-txt" placeholder="Response Label String Value" style="margin:0 5px;" value="${prefillText.replace(/"/g, "&quot;")}">
+          <div class="row-tools">
+            <button type="button" class="row-tool-btn" title="Insert a math symbol or equation">∑</button>
+          </div>
+        `;
+        box.appendChild(div);
+
+        const textInput = div.querySelector(".row-txt");
+        div.querySelector(".row-tool-btn").addEventListener("click", () => {
+          showMathBuilderModal(textInput);
+        });
+      }
+
+      function commitSavedQuestionToDatabase() {
+        const sid = document.getElementById("form-sid").value;
+        const eid = document.getElementById("form-eid").value;
+        const text = document.getElementById("form-text").value.trim();
+        const expl = document.getElementById("form-expl").value.trim();
+
+        if (!sid || !eid || !text) {
+          showToast("Complete prompt criteria tracking data updates.", "error");
+          return;
+        }
+        const subj = DB.subjects.find((s) => s.id === sid);
+        const exam = subj?.exams.find((e) => e.id === eid);
+        if (!exam) return;
+
+        let choices = [];
+        let correct = [];
+
+        if (adminForm.type === "tf") {
+          choices = [
+            { id: "true", text: "True" },
+            { id: "false", text: "False" },
+          ];
+          const checked = document.querySelector(
+            'input[name="tf-correct"]:checked',
+          );
+          if (!checked) {
+            showToast("Pick boolean alignment state.", "error");
+            return;
+          }
+          correct = [checked.value];
+        } else {
+          const rows = document.querySelectorAll(
+            "#form-choices-box .choice-row",
+          );
+          rows.forEach((r, idx) => {
+            const txt = r.querySelector(".row-txt").value.trim();
+            if (txt) {
+              const id = String(idx);
+              choices.push({ id, text: txt });
+              if (r.querySelector("input").checked) correct.push(id);
+            }
+          });
+        }
+
+        if (choices.length < 2 || !correct.length) {
+          showToast(
+            "Validation limits require 2 configured options with correct validation targets mapped.",
+            "error",
+          );
+          return;
+        }
+
+        if (adminForm.editingQid) {
+          const i = exam.questions.findIndex(
+            (q) => q.id === adminForm.editingQid,
+          );
+          if (i === -1) {
+            showToast("Original question entry could not be located.", "error");
+            return;
+          }
+          exam.questions[i] = {
+            id: adminForm.editingQid,
+            type: adminForm.type,
+            text,
+            choices,
+            correct,
+            explanation: expl,
+            img: uploadedImageBase64,
+          };
+          saveDB();
+          showToast("💾 Question entry updated successfully.", "success");
+          buildTopnavSubjects();
+          adminForm.editingQid = null;
+          switchAdminTab("manage");
+        } else {
+          exam.questions.push({
+            id: "q-" + Date.now(),
+            type: adminForm.type,
+            text,
+            choices,
+            correct,
+            explanation: expl,
+            img: uploadedImageBase64,
+          });
+          saveDB();
+          showToast("Assessment node merged cleanly.", "success");
+          buildTopnavSubjects();
+          switchAdminTab("questions");
+        }
+      }
+
+      function saveSubjectStructure() {
+        const val = document.getElementById("add-subj-name").value.trim();
+        if (!val) return;
+        DB.subjects.push({ id: "s-" + Date.now(), name: val, exams: [] });
+        saveDB();
+        showToast("Context added.");
+        buildTopnavSubjects();
+        switchAdminTab("structure");
+      }
+
+      function saveExamStructure() {
+        const p = document.getElementById("add-exam-parent").value;
+        const val = document.getElementById("add-exam-name").value.trim();
+        if (!p || !val) return;
+        const subj = DB.subjects.find((s) => s.id === p);
+        if (subj)
+          subj.exams.push({ id: "e-" + Date.now(), name: val, questions: [] });
+        saveDB();
+        showToast("Container map linked.");
+        buildTopnavSubjects();
+        switchAdminTab("structure");
+      }
+
+      function renderData(c) {
+        document.getElementById("breadcrumb").innerHTML =
+          "JSON Synchronization Architecture";
+        c.innerHTML = `
+          <div class="card">
+            <h3>Data Pipeline Interoperability Management</h3>
+            <p style="margin: 10px 0; font-size:1rem; color:var(--txt2);">Export structural components dynamically as JSON to migrate your custom quiz database instantly across browsers and devices.</p>
+            <button class="btn btn-primary" onclick="triggerJsonDownloadPipeline()">Download data package</button>
+            <label class="btn btn-secondary" style="margin-left:5px;">Upload JSON Backup Archive<input type="file" accept=".json" style="display:none" onchange="executeJsonArchiveIngestion(event)"></label>
+            <button class="btn btn-danger" onclick="wipeLocalSystemMemory()" style="margin-left: 5px;">Factory Wipe Local Storage</button>
+          </div>
+        `;
+      }
+
+      function triggerJsonDownloadPipeline() {
+        const blob = new Blob([JSON.stringify(DB, null, 2)], {
+          type: "application/json",
+        });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `quizme_backup_${Date.now()}.json`;
+        a.click();
+      }
+
+      function executeJsonArchiveIngestion(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          try {
+            const parsed = JSON.parse(evt.target.result);
+            if (parsed.subjects) {
+              DB = parsed;
+              saveDB();
+              buildTopnavSubjects();
+              renderPage("home");
+              showToast(
+                "Database architecture updated successfully.",
+                "success",
+              );
+            }
+          } catch {
+            showToast("Invalid document schema compilation format.", "error");
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function wipeLocalSystemMemory() {
+        showModal(
+          "Confirm Destruction Loop",
+          "This completely purges your local storage questions array permanently. Proceed?",
+          [
+            { label: "Abort", cls: "btn-secondary", action: closeModal },
+            {
+              label: "Erase Data Memory",
+              cls: "btn-danger",
+              action: () => {
+                localStorage.clear();
+                loadDB();
+                buildTopnavSubjects();
+                closeModal();
+                renderPage("home");
+              },
+            },
+          ],
+        );
+      }
+
+      function buildTopnavSubjects() {
+        // Subjects no longer shown in topnav — nothing to build
+      }
+
+      function buildTopnavDesktopSubjects() {
+        const box = document.getElementById("topnav-subjects");
+        if (!box) return;
+        box.innerHTML = "";
+
+        DB.subjects.forEach((s) => {
+          const wrap = document.createElement("div");
+          wrap.className = "topnav-subject-wrap";
+
+          const trigger = document.createElement("button");
+          trigger.className = "topnav-subject-trigger";
+          trigger.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-bookmark-icon lucide-folder-bookmark"><path d="M12 6v8l3-3 3 3V6"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></svg> ${escHtml(s.name)} <span class="topnav-subject-arrow">▾</span>`;
+
+          const drop = document.createElement("div");
+          drop.className = "subject-dropdown";
+
+          s.exams.forEach((e) => {
+            const st = getExamStatus(e.id);
+            const btn = document.createElement("button");
+            btn.className = `subject-dropdown-exam ${quizState?.examId === e.id ? "active" : ""}`;
+            btn.innerHTML = `<span class="status-dot ${st}"></span>${escHtml(e.name)}`;
+            btn.addEventListener("click", () => {
+              drop.classList.remove("open");
+              trigger.classList.remove("open");
+              handleExamCardClick(s.id, e.id);
+            });
+            drop.appendChild(btn);
+          });
+
+          if (!s.exams.length) {
+            const empty = document.createElement("span");
+            empty.className = "subject-dropdown-label";
+            empty.textContent = "No exams yet";
+            drop.appendChild(empty);
+          }
+
+          trigger.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            const isOpen = drop.classList.contains("open");
+            // close all other dropdowns
+            document
+              .querySelectorAll(".subject-dropdown")
+              .forEach((d) => d.classList.remove("open"));
+            document
+              .querySelectorAll(".topnav-subject-trigger")
+              .forEach((t) => t.classList.remove("open"));
+            if (!isOpen) {
+              drop.classList.add("open");
+              trigger.classList.add("open");
+            }
+          });
+
+          wrap.appendChild(trigger);
+          wrap.appendChild(drop);
+          box.appendChild(wrap);
+        });
+
+        // Close dropdowns when clicking elsewhere
+        document.addEventListener(
+          "click",
+          () => {
+            document
+              .querySelectorAll(".subject-dropdown")
+              .forEach((d) => d.classList.remove("open"));
+            document
+              .querySelectorAll(".topnav-subject-trigger")
+              .forEach((t) => t.classList.remove("open"));
+          },
+          { once: false, capture: false },
+        );
+      }
+
+      function arraysEqual(a, b) {
+        return a.length === b.length && a.every((v, i) => v === b[i]);
+      }
+
+      // Safe global random sorting matrix
+      function shuffleArr(arr) {
+        let shuffled = [...arr];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+      }
+
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function renderMarkdown(t) {
+        if (typeof marked !== "undefined") {
+          try {
+            let processedText = (t || "")
+              .replace(/\\\(/g, "$")
+              .replace(/\\\)/g, "$")
+              .replace(/\\\[/g, "$$")
+              .replace(/\\\]/g, "$$");
+
+            let html = marked.parse(processedText);
+            let tempDiv = document.createElement("div");
+            tempDiv.innerHTML = html;
+
+            if (typeof renderMathInElement !== "undefined") {
+              renderMathInElement(tempDiv, {
+                delimiters: [
+                  { left: "$$", right: "$$", display: true },
+                  { left: "$", right: "$", display: false },
+                ],
+                throwOnError: false,
+              });
+            }
+            return tempDiv.innerHTML;
+          } catch (e) {
+            console.error("Markdown/Math parser error: ", e);
+          }
+        }
+        return t || "";
+      }
+      function renderInlineMarkdown(t) {
+        if (typeof marked !== "undefined") {
+          try {
+            let processedText = (t || "")
+              .replace(/\\\(/g, "$")
+              .replace(/\\\)/g, "$")
+              .replace(/\\\[/g, "$$")
+              .replace(/\\\]/g, "$$");
+
+            // parseInline = no wrapping <p> tags, stays as a flat span-level output
+            let html = marked.parseInline(processedText);
+            let tempSpan = document.createElement("span");
+            tempSpan.innerHTML = html;
+
+            if (typeof renderMathInElement !== "undefined") {
+              renderMathInElement(tempSpan, {
+                delimiters: [
+                  { left: "$$", right: "$$", display: true },
+                  { left: "$", right: "$", display: false },
+                ],
+                throwOnError: false,
+              });
+            }
+            return tempSpan.innerHTML;
+          } catch (e) {
+            console.error("Inline markdown/math parser error:", e);
+          }
+        }
+        return escHtml(t || "");
+      }
+
+      // Insert raw text at the cursor position (textarea OR input)
+      function insertTextAtCursor(el, text) {
+        const start = el.selectionStart ?? el.value.length;
+        const end = el.selectionEnd ?? el.value.length;
+        const val = el.value;
+        el.value = val.slice(0, start) + text + val.slice(end);
+        const pos = start + text.length;
+        el.focus();
+        el.setSelectionRange(pos, pos);
+        el.dispatchEvent(new Event("input"));
+      }
+
+      // Wrap the current selection (or a placeholder) with before/after markers
+      function wrapSelection(el, before, after, placeholder) {
+        const start = el.selectionStart ?? el.value.length;
+        const end = el.selectionEnd ?? el.value.length;
+        const val = el.value;
+        const selected = val.slice(start, end) || placeholder;
+        el.value =
+          val.slice(0, start) + before + selected + after + val.slice(end);
+        const cursorPos =
+          start + before.length + selected.length + after.length;
+        el.focus();
+        el.setSelectionRange(cursorPos, cursorPos);
+        el.dispatchEvent(new Event("input"));
+      }
+
+      // Turn a plain <textarea> into a toolbar + textarea + live-preview composer
+      function enhanceTextareaWithRichEditor(textarea) {
+        if (!textarea || textarea.dataset.enhanced) return;
+        textarea.dataset.enhanced = "true";
+
+        const wrap = document.createElement("div");
+        wrap.className = "rich-editor-wrap";
+
+        const toolbar = document.createElement("div");
+        toolbar.className = "rich-toolbar";
+        toolbar.innerHTML = `
+          <button type="button" class="rt-btn" data-action="bold" title="Bold"><b>B</b></button>
+          <button type="button" class="rt-btn" data-action="italic" title="Italic"><i>I</i></button>
+          <button type="button" class="rt-btn" data-action="inline-code" title="Inline code">{ }</button>
+          <button type="button" class="rt-btn" data-action="code-block" title="Insert a code block">⌨ Code Block</button>
+          <button type="button" class="rt-btn" data-action="math" title="Insert a math equation">∑ Equation</button>
+          <button type="button" class="rt-btn" data-action="image" title="Insert an image">🖼 Image</button>
+        `;
+
+        textarea.parentNode.insertBefore(wrap, textarea);
+        wrap.appendChild(toolbar);
+        wrap.appendChild(textarea);
+
+        const preview = document.createElement("div");
+        preview.className = "rich-preview";
+        preview.innerHTML =
+          '<div class="rich-preview-label">Live Preview — this is what students will see</div><div class="rich-preview-body"></div>';
+        wrap.appendChild(preview);
+        const previewBody = preview.querySelector(".rich-preview-body");
+
+        const updatePreview = () => {
+          previewBody.innerHTML =
+            renderMarkdown(textarea.value) ||
+            '<span style="color:var(--txt2)">Nothing to preview yet…</span>';
+        };
+        textarea.addEventListener("input", updatePreview);
+        updatePreview();
+
+        toolbar.querySelectorAll(".rt-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            switch (btn.dataset.action) {
+              case "bold":
+                wrapSelection(textarea, "**", "**", "bold text");
+                break;
+              case "italic":
+                wrapSelection(textarea, "*", "*", "italic text");
+                break;
+              case "inline-code":
+                wrapSelection(textarea, "`", "`", "code");
+                break;
+              case "code-block":
+                showCodeBlockModal(textarea);
+                break;
+              case "math":
+                showMathBuilderModal(textarea);
+                break;
+              case "image":
+                triggerInlineImageInsert(textarea);
+                break;
+            }
+          });
+        });
+      }
+
+      // ─── Code Block Modal ───
+      function showCodeBlockModal(targetEl) {
+        closeModal();
+        const overlay = document.createElement("div");
+        overlay.className = "modal-overlay";
+        overlay.id = "m-overlay";
+        overlay.innerHTML = `
+          <div class="modal" style="max-width:600px;">
+            <h3 style="margin-bottom:10px;">Insert a Code Block</h3>
+            <p style="font-size:0.82rem; color:var(--txt2); margin-bottom:14px;">Pick a language and paste your code — formatting is handled automatically.</p>
+            <div class="form-group">
+              <label class="form-label">Language</label>
+              <select id="cb-lang" class="form-input">
+                <option value="">Plain text</option>
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="c">C</option>
+                <option value="cpp">C++</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="sql">SQL</option>
+                <option value="json">JSON</option>
+                <option value="bash">Bash / Terminal</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Code</label>
+              <textarea id="cb-code" class="form-input" style="min-height:140px; font-family:var(--font-mono); font-size:0.85rem;" placeholder="Paste or type your code here..."></textarea>
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="cb-cancel">Cancel</button>
+              <button class="btn btn-primary" id="cb-insert">Insert Code Block</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay
+          .querySelector("#cb-cancel")
+          .addEventListener("click", closeModal);
+        overlay.querySelector("#cb-insert").addEventListener("click", () => {
+          const lang = overlay.querySelector("#cb-lang").value;
+          const code = overlay.querySelector("#cb-code").value;
+          if (!code.trim()) {
+            showToast("Add some code first.", "error");
+            return;
+          }
+          // Strip any accidental ``` from pasted code so fences never break
+          const safeCode = code.replace(/```/g, "ʼʼʼ");
+          insertTextAtCursor(
+            targetEl,
+            "\n```" + lang + "\n" + safeCode + "\n```\n",
+          );
+          closeModal();
+        });
+      }
+
+      // ─── Math Equation Builder Modal ───
+      const MATH_TEMPLATES = [
+        { label: "x²", insert: "^{}", cursorBack: 1 },
+        { label: "x₁", insert: "_{}", cursorBack: 1 },
+        { label: "a∕b", insert: "\\frac{}{}", cursorBack: 3 },
+        { label: "√x", insert: "\\sqrt{}", cursorBack: 1 },
+        { label: "ⁿ√x", insert: "\\sqrt[]{}", cursorBack: 3 },
+        { label: "Σ Sum", insert: "\\sum_{}^{}", cursorBack: 3 },
+        { label: "∫ Integral", insert: "\\int_{}^{}", cursorBack: 3 },
+        { label: "π", insert: "\\pi" },
+        { label: "θ", insert: "\\theta" },
+        { label: "α", insert: "\\alpha" },
+        { label: "β", insert: "\\beta" },
+        { label: "Δ", insert: "\\Delta" },
+        { label: "×", insert: "\\times" },
+        { label: "÷", insert: "\\div" },
+        { label: "±", insert: "\\pm" },
+        { label: "≤", insert: "\\leq" },
+        { label: "≥", insert: "\\geq" },
+        { label: "≠", insert: "\\neq" },
+        { label: "∞", insert: "\\infty" },
+        { label: "→", insert: "\\rightarrow" },
+      ];
+
+      function showMathBuilderModal(targetEl) {
+        closeModal();
+        const overlay = document.createElement("div");
+        overlay.className = "modal-overlay";
+        overlay.id = "m-overlay";
+        overlay.innerHTML = `
+          <div class="modal" style="max-width:560px;">
+            <h3 style="margin-bottom:6px;">Insert a Math Equation</h3>
+            <p style="font-size:0.82rem; color:var(--txt2); margin-bottom:12px;">Tap the symbols below to build your equation — no special syntax needed.</p>
+            <div class="math-btn-grid" id="math-btn-grid"></div>
+            <div class="form-group" style="margin-top:14px;">
+              <label class="form-label">Equation</label>
+              <input type="text" id="math-input" class="form-input" style="font-family:var(--font-mono);" placeholder="Tap buttons above, or type plain numbers/letters here">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preview</label>
+              <div id="math-preview" class="math-preview-box"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="correct-toggle" style="font-size:0.8rem; cursor:pointer;">
+                <input type="checkbox" id="math-block-toggle"> Display as a centered block equation (instead of inline)
+              </label>
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="math-cancel">Cancel</button>
+              <button class="btn btn-primary" id="math-insert">Insert Equation</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const input = overlay.querySelector("#math-input");
+        const preview = overlay.querySelector("#math-preview");
+        const blockToggle = overlay.querySelector("#math-block-toggle");
+        const grid = overlay.querySelector("#math-btn-grid");
+
+        MATH_TEMPLATES.forEach((t) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "math-tpl-btn";
+          b.textContent = t.label;
+          b.addEventListener("click", () => {
+            const start = input.selectionStart ?? input.value.length;
+            const end = input.selectionEnd ?? input.value.length;
+            const val = input.value;
+            input.value = val.slice(0, start) + t.insert + val.slice(end);
+            const pos = start + t.insert.length - (t.cursorBack || 0);
+            input.focus();
+            input.setSelectionRange(pos, pos);
+            updateMathPreview();
+          });
+          grid.appendChild(b);
+        });
+
+        function updateMathPreview() {
+          const expr = input.value.trim();
+          if (!expr) {
+            preview.innerHTML =
+              '<span style="color:var(--txt2); font-size:0.85rem;">Your equation will appear here…</span>';
+            return;
+          }
+          try {
+            if (typeof katex !== "undefined") {
+              katex.render(expr, preview, {
+                throwOnError: false,
+                displayMode: blockToggle.checked,
+              });
+            } else {
+              preview.textContent = expr;
+            }
+          } catch {
+            preview.innerHTML =
+              '<span style="color:var(--danger); font-size:0.85rem;">Keep editing — this combination can\'t be shown yet.</span>';
+          }
+        }
+
+        input.addEventListener("input", updateMathPreview);
+        blockToggle.addEventListener("change", updateMathPreview);
+        updateMathPreview();
+
+        overlay
+          .querySelector("#math-cancel")
+          .addEventListener("click", closeModal);
+        overlay.querySelector("#math-insert").addEventListener("click", () => {
+          const expr = input.value.trim();
+          if (!expr) {
+            showToast("Build an equation first.", "error");
+            return;
+          }
+          const wrapped = blockToggle.checked ? `\n$$${expr}$$\n` : `$${expr}$`;
+          insertTextAtCursor(targetEl, wrapped);
+          closeModal();
+        });
+      }
+
+      // ─── Inline Image Insert ───
+      function triggerInlineImageInsert(targetEl) {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".png,.jpg,.jpeg,.gif,.webp";
+        input.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          if (file.size > 1.5 * 1024 * 1024) {
+            showToast("Image too large — please use one under 1.5MB.", "error");
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            insertTextAtCursor(targetEl, `\n![image](${evt.target.result})\n`);
+            showToast("Image inserted!", "success");
+          };
+          reader.readAsDataURL(file);
+        });
+        input.click();
+      }
+      function showToast(m, type = "") {
+        const c = document.getElementById("toast-container");
+        const t = document.createElement("div");
+        t.className = `toast ${type}`;
+        t.textContent = m;
+        if (c) {
+          c.appendChild(t);
+          setTimeout(() => t.remove(), 3000);
+        }
+      }
+
+      function showModal(title, body, actions) {
+        closeModal();
+        const div = document.createElement("div");
+        div.className = "modal-overlay";
+        div.id = "m-overlay";
+        div.innerHTML = `
+          <div class="modal">
+            <h3 style="margin-bottom:10px;">${title}</h3>
+            <p style="font-size:0.9rem; color:var(--txt2); margin-bottom:15px;">${body}</p>
+            <div class="modal-actions">${actions.map((a, i) => `<button class="btn ${a.cls}" id="m-act-${i}">${a.label}</button>`).join("")}</div>
+          </div>
+        `;
+        document.body.appendChild(div);
+        actions.forEach((a, i) =>
+          document
+            .getElementById(`m-act-${i}`)
+            .addEventListener("click", a.action),
+        );
+      }
+
+      // ─── Generic single-input modal (for renaming things) ───
+      function showInputModal(title, label, initialValue, onConfirm) {
+        closeModal();
+        const overlay = document.createElement("div");
+        overlay.className = "modal-overlay";
+        overlay.id = "m-overlay";
+        overlay.innerHTML = `
+          <div class="modal">
+            <h3 style="margin-bottom:10px;">${title}</h3>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">${label}</label>
+              <input type="text" id="input-modal-field" class="form-input" value="${escHtml(initialValue)}">
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-secondary" id="input-modal-cancel">Cancel</button>
+              <button class="btn btn-primary" id="input-modal-save">Save</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const field = overlay.querySelector("#input-modal-field");
+        field.focus();
+        field.select();
+
+        const submit = () => {
+          const val = field.value.trim();
+          if (!val) {
+            showToast("This can't be empty.", "error");
+            return;
+          }
+          onConfirm(val);
+          closeModal();
+        };
+
+        field.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") submit();
+        });
+        overlay
+          .querySelector("#input-modal-cancel")
+          .addEventListener("click", closeModal);
+        overlay
+          .querySelector("#input-modal-save")
+          .addEventListener("click", submit);
+      }
+
+      function closeModal() {
+        const el = document.getElementById("m-overlay");
+        if (el) el.remove();
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // ─── Top nav wiring ───
+        const drawer = document.getElementById("topnav-drawer");
+        const backdrop = document.getElementById("topnav-backdrop");
+        const hamburger = document.getElementById("topnav-hamburger");
+        openDrawer = () => {
+          drawer.classList.add("open");
+          backdrop.classList.add("visible");
+        };
+        closeDrawer = () => {
+          drawer.classList.remove("open");
+          backdrop.classList.remove("visible");
+        };
+        hamburger.addEventListener("click", () =>
+          drawer.classList.contains("open") ? closeDrawer() : openDrawer(),
+        );
+        backdrop.addEventListener("click", closeDrawer);
+
+        // Theme toggle
+        const MOON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="30"
+            height="30" >
+            <g id="Colors">
+              <g><path fill="#bddbda" d="M442.88,374.63c.78-2.62.38-1.46,0,0h0Z"/>
+                <path
+                  fill="#bddbda"
+                  d="M860.5,693.67c-1.47-5.34-5.59-11.12-10.57-13.75-12.07-6.38-23.74-2.07-31.47,8.25,3.79-5.06-.74.53-1.69,1.48-1.54,1.53-3.19,2.92-4.84,4.34-.03.03-.06.05-.09.08-.13.09-.28.19-.44.3-1.79,1.24-3.56,2.52-5.36,3.76-.47.33-.95.65-1.42.98-4.05-1.39-8.51-1.61-13-.25-6.53,1.98-13.09,3.37-19.79,4.59-.21.04-.4.07-.57.11-.18.01-.38.03-.61.05-1.22.11-2.44.25-3.66.36-3.67.33-7.35.52-11.04.62-6.8.18-13.61-.02-20.39-.48-3.11-.21-6.21-.48-9.31-.8-1.86-.19-3.72-.43-5.59-.63-.28-.03-.52-.06-.72-.08-.18-.03-.37-.06-.61-.09-26.35-4.04-52.59-9.66-78.42-16.22-12.35-3.14-24.61-6.72-36.54-11.21-1.62-.61-3.22-1.26-4.83-1.88-.18-.07-.34-.13-.49-.19-2.75-1.23-5.5-2.45-8.21-3.77-5.69-2.77-11.24-5.83-16.61-9.19-2.73-1.71-5.4-3.51-8.02-5.37-1.2-.85-2.38-1.74-3.57-2.61-.08-.06-.14-.1-.22-.16-.19-.16-.42-.35-.7-.59-5-4.14-9.9-8.38-14.63-12.83-9.39-8.83-18.33-18.15-27.13-27.56-8.7-9.3-17.16-18.82-25.15-28.73-1.08-1.34-2.15-2.7-3.22-4.05-.04-.05-.08-.1-.12-.16-1.87-2.56-3.8-5.08-5.64-7.66-3.67-5.15-7.2-10.42-10.52-15.8-3.32-5.38-6.45-10.89-9.34-16.52-1.33-2.59-2.61-5.21-3.84-7.85-.75-1.62-1.68-3.29-2.24-4.98.06.18.11.32.16.47-.19-.53-.42-1.15-.64-1.7-4.94-12.42-8.8-25.26-11.8-38.28-1.48-6.45-2.76-12.94-3.84-19.47-.43-2.58-.95-5.2-1.22-7.81-.05-.57-.1-1.11-.13-1.39-.2-1.71-.39-3.41-.57-5.12-1.29-12.53-1.87-25.14-1.75-37.73.11-12.6.92-25.19,2.4-37.7.05-.46.22-1.16.39-1.81-.09.32-.2.68-.33,1.11.3-1,.33-2.34.49-3.4.51-3.4,1.06-6.79,1.67-10.17,1.11-6.2,2.39-12.37,3.83-18.51,3.28-13.94,7.43-27.67,12.41-41.09,1.2-3.22,2.44-6.42,3.73-9.61.06-.14.93-2.19,1.23-2.92.5-1.13,1.06-2.41,1.17-2.65,2.81-6.27,5.81-12.46,9-18.54,6.47-12.37,13.74-24.22,21.93-35.51,0,0,0-.01.01-.02,1.24-1.47,2.43-2.99,3.69-4.45,2.15-2.49,4.37-4.92,6.69-7.26,2.31-2.34,4.7-4.59,7.18-6.74,1.15-1,2.45-2.42,3.79-3.15-5.39,2.95.81-.49,1.97-1.29,7.47-5.16,12.4-14.22,11.31-23.09,7.88-2.27,15.77-4.54,23.65-6.82,11.55-3.35,19.93-16.36,16.06-28.29-3.8-11.73-15.91-19.65-28.29-16.06-28.32,8.21-56.7,16.19-84.69,25.35-3.97-3.88-9.15-6.27-14.96-5.52-8.63,1.12-15.47,3.1-23.35,6.86-5.01,2.39-9.89,5.07-14.77,7.69-9.89,5.32-19.65,10.87-29.28,16.64-19.47,11.68-38.62,24.13-56.6,38.02-18.81,14.53-33.88,31.59-47.15,51.31-10.8,16.04-20.87,32.72-30.54,49.49-3.23,1.9-6.03,4.58-8.05,8.01-31.66,53.74-51.11,114.26-55.59,176.51-4.22,58.65,6.93,117.34,31.88,170.5,23.81,50.72,61.36,94.92,108.07,125.94,26.28,17.46,55.27,31.64,83.92,44.77,15.66,7.17,31.6,13.38,48.44,17.09,17.41,3.83,35.21,5.9,52.88,8.14,32.73,4.15,65.6,6.38,98.2-.19,13.42-2.7,26.12-7.56,38.61-13,7.22,5.41,17.09,6.76,25.41,1.76,7.25-4.36,14.5-8.73,21.98-12.67,3.47-1.83,7.05-3.43,10.56-5.17.16-.07.29-.13.41-.18.51-.21,1.01-.41,1.52-.62,1.65-.66,3.31-1.3,4.96-1.97,8.75-3.51,17.53-7.02,25.23-12.55,7.86-5.65,15.03-12.05,22.24-18.48,25.31-22.58,51.1-44.84,73.48-70.43,1.77-2.02,3.22-4.33,4.31-6.79,10.06-7.27,19.5-15.25,27.02-25.29,3.34-4.46,3.73-12.61,2.32-17.72ZM686.61,763.98c-.08-1.05-.17-2.1-.27-3.15.76.06,1.52.11,2.28.16-.66,1-1.33,2-2.01,2.99Z"
+                />
+              </g>
+              <path
+                fill="#95adab"
+                d="M341.03,376.24c-.4-.86-.83-1.71-1.29-2.56-3.8-6.87-11.41-10.89-19.11-11.29-2.15-2.62-4.76-4.85-7.86-6.66-14.03-8.18-30.76-.59-38.91,11.99-11.26,17.38-6.74,39.23,1.76,56.61,4.97,10.18,13.42,18.18,24.56,20.98,14.09,3.54,27.86-3.87,34.9-16.06,4.62-8,8.12-16.95,9.47-26.04,4.56-8.42,3.28-20.25-3.51-26.97Z"
+              />
+              <path
+                fill="#95adab"
+                d="M397.4,579.78c-2.72-5.35-5.13-11.01-8.31-16.09-7.16-11.48-20.51-17.48-33.84-13.84-1.82.5-3.63,1.09-5.42,1.77-2.35-.87-4.89-1.47-7.59-1.76-19.31-2.1-30.08,18.09-33.92,33.8-3.32,13.6-3.28,27.19-.78,40.9,2.31,12.67,8,27.05,16.9,36.61,7.2,7.74,15.89,8.95,25.92,8.6,9.41-.33,18.5-.99,26.94-5.64,13.66-7.51,21.59-21.73,25.39-36.38,1.79-6.92,3.5-14.35,3.4-21.49-.14-9.7-4.41-18.05-8.69-26.47Z"
+              />
+              <path
+                fill="#95adab"
+                d="M523.13,731.17c-2.73-1.43-5.8-2.3-8.95-2.6-3.28-2-7.08-3.06-11.21-2.65-10.45,1.06-18.59,5.09-24.27,14.26-3.9,6.29-4.77,13.73-5.53,20.9-1.76,16.52,7.4,35.05,24.6,39.17,37.85,9.08,59.55-51.12,25.37-69.08Z"
+              />
+            </g>
+            <g id="Outlines">
+              <path d="M600.14,142.66c1.93,0,1.93-3,0-3s-1.93,3,0,3h0Z" />
+              <path
+                d="M599.81,132.68c-55.03,27.94-99.92,74.55-129.17,128.61-29.4,54.34-43.56,116.98-36.25,178.6,7.35,62.02,33.46,120.82,74.2,168.14,41.55,48.25,98.29,81.71,160.5,95.16s131.67,7.58,191.65-18.84c7.27-3.2,14.39-6.74,21.37-10.54l-14.37-14.37c-44.64,92.64-123.14,171.18-222.85,201.8-102.11,31.36-217.2,12.94-304.08-49.27-80.85-57.9-136.12-152.24-147.64-250.98-12.24-104.88,22.82-213.72,92.38-292.95,34.55-39.35,77.48-70.08,126.32-89.16,49.08-19.17,101.69-27.42,154.24-27.76,13.01-.09,26.01.32,38.99,1.12,5.67.35,10.5-5.08,10.5-10.5,0-5.97-4.82-10.15-10.5-10.5-55.18-3.39-111.35.76-164.66,15.92-52.82,15.03-102.25,41.22-142.82,78.41-40.7,37.31-72.99,84.33-94.67,135.01-22.01,51.46-33.92,107.17-33.18,163.23.71,53.77,13.37,106.73,35.94,155.46,22.06,47.63,54.03,91.09,93.3,125.96,41.25,36.62,90.36,63.45,143.52,78.24,54.48,15.15,112.21,17.76,167.84,7.73,54.09-9.76,105.34-32.63,149.19-65.71,43.53-32.84,80.04-74.33,107.92-121.16,6.64-11.15,12.75-22.61,18.39-34.3,4.48-9.29-4.72-19.62-14.37-14.37-53.15,28.95-115.88,39.45-175.73,31.04-59.41-8.35-114.97-35-157.46-77.5-41-41.02-69.06-94.33-80.06-151.25-10.88-56.29-2.8-115,21-167.03,24.07-52.61,62.69-99.22,112.24-129.58,6.15-3.77,12.46-7.27,18.9-10.54,5.06-2.57,6.51-9.68,3.77-14.37-3.01-5.14-9.29-6.34-14.37-3.77h0Z"
+              />
+              <path d="M314.44,353.38c1.93,0,1.93-3,0-3s-1.93,3,0,3h0Z" />
+              <path
+                d="M311.79,358.13c13.34,6.35,24.59,17.24,28.11,31.98,2.97,12.43-1.43,27.5-12.09,35.1-12.22,8.71-29.7,6.55-40.69-3.16s-14.76-24.44-10.11-38.47,21.54-27.05,37.29-24.39c5.59.94,11.31-1.48,12.92-7.33,1.38-5.04-1.71-11.97-7.33-12.92-23.05-3.89-46.15,7.59-58.05,27.7-11.86,20.04-9.97,45.8,4.46,63.91s39.34,25.98,60.87,18.27,34.59-28.46,34.61-50.91c.02-25.1-17.3-47.41-39.38-57.91-5.12-2.43-11.33-1.42-14.37,3.77-2.68,4.58-1.38,11.92,3.77,14.37h0Z"
+              />
+              <path
+                d="M354.03,555.55c20.11,4.48,36.69,18.74,42.69,38.7,5.96,19.83,1.32,42.25-17.44,53.12-17.32,10.04-43.18,13.41-59.88.34-16.51-12.92-16.22-40.16-10.7-58.46s24.83-38.73,45.32-33.7c13.12,3.22,18.72-17.02,5.58-20.25-26.76-6.57-54.98,12.52-66.34,36.13-11.88,24.7-13.41,61.01,4.07,83.53,19.07,24.58,54.56,26.6,81.65,15.68,13.17-5.31,25.07-13.56,32.43-25.97s9.91-27.67,8.28-41.86c-3.77-32.87-27.6-60.28-60.1-67.51-13.17-2.93-18.79,17.31-5.58,20.25h0Z"
+              />
+              <path
+                d="M512.14,734.37c10.24,3.23,18.53,12.51,19.91,23.3,1.42,11.09-4.38,22.61-14.03,28.14-21.96,12.58-49.02-10.38-39.27-34.16,6.09-14.85,21-18.17,35.51-17.06,5.66.44,10.5-5.14,10.5-10.5,0-6.04-4.82-10.06-10.5-10.5-20.84-1.6-41.1,5.5-52,24.29-10.22,17.62-7.68,40.2,5.28,55.67s35.08,20.89,53.48,13.89c18.83-7.16,31.53-25.08,32.14-45.25.66-22.03-14.83-41.57-35.45-48.07-12.92-4.07-18.45,16.2-5.58,20.25h0Z"
+              />
+            </g>
+          </svg>`;
+        const SUN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 900" width="30"
+            height="30">
+  <g id="Colors">
+    <path fill= "#ffee71" d="M878.05,539.28c-4.09-6.34-10.74-13.03-18.53-14.25-5.17-.81-10.08-2.31-14.92-4.17-8.75-3.89-17.39-8.07-26.48-11.11-3.26-1.09-6.54-2.04-9.83-2.98-4.11-4.7-9.69-8.5-15.38-11.06-3.08-1.39-6.13-2.65-9.02-4.31-2.24-2.11-4.37-4.35-6.44-6.65-1.34-2.49-3.05-4.86-5.14-7.05-2.39-2.49-5.1-4.62-8.09-6.26,10.17-11.8,19.74-24.15,28.66-36.91,5.35-7.64,10.42-15.47,15.21-23.47,2.82-4.72,5.84-9.59,7.88-14.76,4.41-.78,8.77-1.79,12.98-3.29,2.72-.36,5.31-1.18,7.78-2.47,3.84-1.25,7.17-3.39,9.98-6.41,3.02-2.81,5.16-6.13,6.41-9.98,1.94-3.69,2.83-7.68,2.67-11.94-.37-2.75-.74-5.49-1.11-8.24-1.47-5.25-4.13-9.81-7.97-13.68-2.09-1.62-4.18-3.23-6.27-4.85-4.84-2.8-10.05-4.21-15.65-4.23h-.6c-.62-.02-1.23-.02-1.84,0-2.77-.06-5.51.32-8.05,1.33-8.85,3.5-18.32,4.5-27.68,5.81-10.8,1.51-21.6,3.02-32.4,4.51-18.99,2.62-37.98,5.21-56.97,7.77-.08-4.52.3-9.03.85-13.53,3.46-23.7,8.75-47.45,7.82-71.5-.07-1.92-.33-3.82-.74-5.7,6.08-6.22,11.96-12.62,17.58-19.23,5.42-6.37,9.08-13.31,9.08-21.92,0-7.6-3.38-16.69-9.08-21.92-11.56-10.61-32.61-13.18-43.84,0-15.68,18.41-33.12,35.17-52.06,50.17-10.71,8.04-21.83,15.49-33.32,22.33-4.96-11.03-11.85-21.46-17.63-31.73-7.52-13.38-15.64-26.62-22.06-40.6-1.5-3.99-2.77-8.04-3.73-12.22-1.32-5.71-4.64-10.76-9.07-14.66.69-2.29,1.38-4.58,2.06-6.87,4.59-15.55-5.53-34.46-21.65-38.13-16.63-3.79-33.22,5-38.13,21.65-11.95,40.53-26.12,80.36-42.39,119.35-.24.56-.48,1.13-.73,1.69-.18-.14-.35-.28-.53-.42-1.15-1.04-2.25-2.13-3.3-3.27-.52-.81-1.02-1.63-1.5-2.47-3.82-6.72-11.11-12.2-18.53-14.25-5.16-1.42-11.5-1.4-17.11.16-.49-.55-.97-1.09-1.46-1.64-6.22-6.92-13.07-12.61-20.43-17.9-4.01-5.68-10.62-10.79-17.26-12.3-1.67-.38-3.38-.66-5.11-.82-2.08-4.34-4.34-8.63-6.81-12.86-8.19-14-28.34-20.2-42.41-11.12-14.11,9.1-19.88,27.43-11.12,42.41,3.04,5.2,5.75,10.55,8.22,16.03,11.23,28.68,15.89,59.26,23.36,89.06-5.13.1-10.17,1.45-14.45,4.21-.81.52-1.59,1.08-2.34,1.65-2.62.68-5.26,1.26-7.93,1.74-6.43.56-12.85.56-19.28,0-6.36-1.13-12.57-2.81-18.62-5.05-6.22-2.98-12.18-6.3-19.16-7.24-7.52-1.01-14.95-.06-21.69,3.72-1.34.75-2.56,1.59-3.69,2.49-12.2-10.06-31.42-11.74-42.91.79-10.8,11.76-12.96,32.35,0,43.84,19.41,17.2,39.33,33.95,55.68,54.17,3.29,4.44,6.43,8.99,9.39,13.67,1.74,2.76,3.41,5.52,5.36,8.14,3.27,4.41,6.06,7.48,9.51,10.53-10.61,5.77-20.09,15.3-29.32,22.84-11.37,8.5-23.22,16.31-35.53,23.4-2.58,1.49-4.9,3.39-6.9,5.59-3.69-.53-7.38-1.03-11.08-1.49-7.32-.9-16.96,4.12-21.92,9.08-5.38,5.38-9.43,14.2-9.08,21.92.36,8.02,2.99,16.33,9.08,21.92,6.46,5.93,13.28,8.01,21.92,9.08.04,0,.08.01.12.02,16.04,2.33,31.94,5.52,47.78,8.95,14.82,3.21,29.9,6.04,44.15,11.34,1.29.61,2.56,1.23,3.83,1.89,5.79,3,12.47,4.26,18.93,3.7-8.89,17.72-17.79,35.43-26.68,53.15-8.63,17.18-17.07,34.56-28.7,49.97l3.42-4.43c-5.1,6.63-8.75,12.67-8.75,21.48,0,7.6,3.38,16.69,9.08,21.92,5.91,5.42,13.66,9.45,21.92,9.08,7.6-.34,17.02-2.76,21.92-9.08.4-.51.78-1.03,1.18-1.55,5.89.43,12.01-.82,17.8-3.9,15.45-8.22,31.24-15.75,47.34-22.61-2.47,1.04-4.94,2.08-7.41,3.13,12.4-5.23,25.22-11,38.42-14.37,3.13,1.92,6.39,3.67,9.73,5.29-1.81,6.43-2.61,12.98-1.8,20.02.92,7.95,2.44,15.79,3.67,23.69,2.4,20.77,2.37,41.69-.1,62.47-.11.79-.2,1.56-.29,2.33-.04.34-.08.68-.13,1.02.03-.23.06-.46.09-.68-.73,7.06-.28,13.48,3.6,20.12,3.76,6.43,11.14,12.56,18.53,14.25,7.94,1.81,16.84,1.42,23.89-3.13,6.3-4.06,13.11-10.75,14.25-18.53.79-5.38,1.48-10.76,2.08-16.14,4.52-2.52,8.46-6.23,11.31-11.12,13.52-23.19,27.81-45.92,42.82-68.17.75.06,1.49.13,2.24.18.7.05,1.41.07,2.11.12,1.23,5.96,4.18,11.99,8.43,15.89,1.14,1.05,2.36,2.04,3.63,2.97,4.46,7.17,8.36,14.69,13.5,21.46,6.85,9.02,14.12,17.7,21.42,26.34,2.54,4.68,6.33,8.79,11.32,11.84.59.36,1.18.72,1.77,1.09.73.44,1.47.84,2.22,1.22-.05,2.45-.08,4.9-.09,7.35-.06,16.22,14.3,31.75,31,31,16.84-.75,30.94-13.62,31-31,.06-18.13,1.2-36.2,3.39-54.19,1.54-10.58,3.48-21.07,5.55-31.57,2.51-12.74,4.93-25.94,4.18-38.98,10.72,7.74,23.32,13.12,35,18.94,8.02,4,16.03,8.03,24.07,12,10.62,5.25,21.71,10.14,33.78,9.8.23.43.46.85.69,1.28,7.77,14.25,28.63,20.01,42.41,11.12,14.45-9.32,19.44-27.17,11.12-42.41-11.56-21.19-22.1-42.9-31.63-65.08-3.97-9.58-7.77-19.22-11.36-28.95-1.81-4.9-4.12-9.31-7.43-12.98,7.72-2.3,15.15-5.56,22.52-8.77,9.35-4.06,18.4-8.78,27.69-12.95,5.75-2.24,11.61-4.12,17.66-5.33,1.47-.1,2.95-.17,4.44-.18,4.3-.05,8.56-1.08,12.47-2.86,4.78,1.75,9.66,3.17,14.7,3.96,8.52,1.33,16.15,1.4,23.89-3.13,6.43-3.76,12.56-11.14,14.25-18.53,1.81-7.94,1.42-16.84-3.13-23.89ZM581.03,741.32c-1.07-1.78-2.12-3.57-3.18-5.36,1.46-.42,2.92-.87,4.37-1.32-.39,2.23-.79,4.46-1.19,6.69ZM695.74,664.1c1.08-1.19,2.14-2.39,3.18-3.61.85,2.14,1.69,4.29,2.55,6.42-1.92-.92-3.83-1.85-5.74-2.81Z"/>
+  </g>
+  <g id="Outlines">
+    <path d="M511,114.7c1.93,0,1.93-3,0-3s-1.93,3,0,3h0Z"/>
+    <path d="M715.22,345.22l.4-.4c1.02-.95,1.75-2.08,2.17-3.38.66-1.25.96-2.6.9-4.05.05-1.45-.25-2.79-.9-4.05-.42-1.3-1.15-2.43-2.17-3.38l-2.13-1.64c-1.64-.95-3.4-1.43-5.3-1.43l-2.79.38c-1.78.5-3.32,1.4-4.63,2.7l-.4.4c-1.02.95-1.75,2.08-2.17,3.38-.66,1.25-.96,2.6-.9,4.05-.05,1.45.25,2.79.9,4.05.42,1.3,1.15,2.43,2.17,3.38l2.13,1.64c1.64.95,3.4,1.43,5.3,1.43l2.79-.38c1.78-.5,3.32-1.4,4.63-2.7h0Z"/>
+    <g>
+      <path d="M513.41,263.41c95.41,1.27,186.85,63.69,219.46,153.95,17.12,47.38,19.2,99.74,5.81,148.31-12.98,47.07-40.72,87.79-78.75,118.24-41.05,32.86-93.33,52.56-145.93,53.89-13.49.34-13.54,21.34,0,21,104.41-2.65,203.26-70.43,239.07-169.14,18.56-51.18,20.22-108.67,5.47-161.02-14.27-50.63-44.54-95.79-85.8-128.39-45.32-35.81-101.38-57.07-159.33-57.84-13.52-.18-13.52,20.82,0,21h0Z"/>
+      <path d="M503.62,106.66c25.85,53.21,51.7,106.42,77.55,159.64,2.48,5.1,9.74,6.47,14.37,3.77,5.21-3.05,6.25-9.25,3.77-14.37-25.85-53.21-51.7-106.42-77.55-159.64-2.48-5.1-9.74-6.47-14.37-3.77-5.21,3.05-6.25,9.25-3.77,14.37h0Z"/>
+      <path d="M594.37,269.77c46.97-31.28,94.56-61.62,142.75-90.99-5.14-3.95-10.28-7.91-15.42-11.86-9.34,55.32-18.68,110.63-28.03,165.95-.94,5.59,1.48,11.31,7.33,12.92,5.04,1.38,11.97-1.71,12.92-7.33,9.34-55.32,18.68-110.63,28.03-165.95,1.44-8.51-6.97-17.01-15.42-11.86-48.19,29.37-95.78,59.71-142.75,90.99-4.71,3.14-6.75,9.27-3.77,14.37,2.74,4.68,9.63,6.92,14.37,3.77h0Z"/>
+      <path d="M710.22,348.76c54.74-2.6,109.58-2.17,164.27,1.27-2.47-5.97-4.95-11.95-7.42-17.92-39.05,45.7-78.09,91.39-117.14,137.09-3.68,4.31-4.23,10.62,0,14.85,3.77,3.77,11.15,4.33,14.85,0,39.05-45.7,78.09-91.39,117.14-137.09,6.02-7.05,1.95-17.33-7.42-17.92-54.69-3.44-109.53-3.87-164.27-1.27-13.45.64-13.53,21.64,0,21h0Z"/>
+      <path d="M759.41,480.98c47.84,27.38,93.86,57.84,137.76,91.17.84-6.4,1.67-12.79,2.51-19.19-53.99,14.35-107.98,28.71-161.98,43.06-13.05,3.47-7.51,23.73,5.58,20.25,53.99-14.35,107.98-28.71,161.98-43.06,9.55-2.54,9.3-14.03,2.51-19.19-43.9-33.33-89.92-63.79-137.76-91.17-11.75-6.72-22.34,11.41-10.6,18.13h0Z"/>
+      <path d="M733.59,615.25c22.32,50.51,41.79,102.26,58.48,154.9l12.92-12.92c-53.48-15.68-106.33-33.44-158.42-53.24-5.3-2.01-11.51,2.23-12.92,7.33-1.62,5.91,2.01,10.89,7.33,12.92,52.1,19.8,104.94,37.56,158.42,53.24,7.5,2.2,15.34-5.29,12.92-12.92-17.25-54.38-37.54-107.74-60.6-159.92-2.29-5.19-9.87-6.4-14.37-3.77-5.35,3.13-6.07,9.16-3.77,14.37h0Z"/>
+      <path d="M633.15,716.43c-8,53.86-16,107.72-24,161.59l17.55-4.63c-37.78-35.97-70.74-76.55-98.11-120.95-7.08-11.48-25.25-.95-18.13,10.6,28.26,45.85,62.38,88.06,101.39,125.2,5.14,4.9,16.33,3.59,17.55-4.63,8-53.86,16-107.72,24-161.59.83-5.6-1.4-11.29-7.33-12.92-4.95-1.36-12.08,1.69-12.92,7.33h0Z"/>
+    </g>
+    <g>
+      <path d="M509.17,242.41c-104.69,1.39-202.86,69.46-239.16,167.85-18.85,51.08-20.82,108.55-6.36,160.98,14,50.78,44.06,95.79,85.43,128.36,45.51,35.82,101.73,57.42,159.83,58.89,13.52.34,13.51-20.66,0-21-95.19-2.41-187.5-64.32-219.69-154.94-16.87-47.48-18.59-99.84-4.92-148.34,13.23-46.93,41.21-87.79,79.21-118.19,41-32.79,93.15-51.93,145.67-52.63,13.5-.18,13.54-21.18,0-21h0Z"/>
+      <path d="M500.82,96.06c-25.85,53.21-51.7,106.42-77.55,159.64-2.48,5.1-1.39,11.35,3.77,14.37,4.61,2.7,11.88,1.36,14.37-3.77,25.85-53.21,51.7-106.42,77.55-159.64,2.48-5.1,1.39-11.35-3.77-14.37-4.61-2.7-11.88-1.36-14.37,3.77h0Z"/>
+      <path d="M438.8,251.64c-46.97-31.28-94.56-61.62-142.75-90.99-8.48-5.17-16.86,3.33-15.42,11.86,9.34,55.32,18.68,110.63,28.03,165.95.95,5.6,7.85,8.73,12.92,7.33,5.93-1.63,8.28-7.3,7.33-12.92-9.34-55.32-18.68-110.63-28.03-165.95-5.14,3.95-10.28,7.91-15.42,11.86,48.19,29.37,95.78,59.71,142.75,90.99,4.72,3.14,11.62.92,14.37-3.77,3.01-5.15.97-11.21-3.77-14.37h0Z"/>
+      <path d="M312.35,327.76c-54.74-2.6-109.58-2.17-164.27,1.27-9.41.59-13.43,10.9-7.42,17.92,39.05,45.7,78.09,91.39,117.14,137.09,3.69,4.31,11.06,3.79,14.85,0,4.28-4.28,3.7-10.52,0-14.85-39.05-45.7-78.09-91.39-117.14-137.09l-7.42,17.92c54.69-3.44,109.53-3.87,164.27-1.27,13.51.64,13.48-20.36,0-21h0Z"/>
+      <path d="M252.56,462.84c-47.84,27.38-93.86,57.84-137.76,91.17-6.79,5.16-7,16.67,2.51,19.19,53.99,14.35,107.98,28.71,161.98,43.06,13.07,3.48,18.65-16.78,5.58-20.25-53.99-14.35-107.98-28.71-161.98-43.06l2.51,19.19c43.9-33.33,89.92-63.79,137.76-91.17,11.73-6.71,1.16-24.86-10.6-18.13h0Z"/>
+      <path d="M270.85,604.65c-23.06,52.18-43.35,105.54-60.6,159.92-2.42,7.63,5.42,15.11,12.92,12.92,53.48-15.68,106.33-33.44,158.42-53.24,5.3-2.01,8.94-7.08,7.33-12.92-1.39-5.08-7.59-9.36-12.92-7.33-52.1,19.8-104.94,37.56-158.42,53.24,4.31,4.31,8.61,8.61,12.92,12.92,16.7-52.64,36.16-104.39,58.48-154.9,2.29-5.18,1.51-11.28-3.77-14.37-4.47-2.61-12.06-1.45-14.37,3.77h0Z"/>
+      <path d="M369.18,722.01c8,53.86,16,107.72,24,161.59,1.22,8.23,12.41,9.53,17.55,4.63,39.01-37.14,73.13-79.35,101.39-125.2,7.11-11.54-11.05-22.1-18.13-10.6-27.37,44.41-60.33,84.98-98.11,120.95l17.55,4.63c-8-53.86-16-107.72-24-161.59-.83-5.61-7.92-8.71-12.92-7.33-6.01,1.65-8.17,7.29-7.33,12.92h0Z"/>
+    </g>
+  </g>
+</svg>`;
+        const toggleTheme = () => {
+          const nextDark =
+            document.documentElement.getAttribute("data-theme") !== "dark";
+          document.documentElement.setAttribute(
+            "data-theme",
+            nextDark ? "dark" : "light",
+          );
+          document.getElementById("theme-toggle").innerHTML = nextDark
+            ? SUN_SVG
+            : MOON_SVG;
+        };
+        document
+          .getElementById("theme-toggle")
+          .addEventListener("click", toggleTheme);
+
+        // Desktop nav buttons
+        document.querySelectorAll(".topnav-btn").forEach((b) =>
+          b.addEventListener("click", () => {
+            quizState = null;
+            renderPage(b.dataset.nav);
+          }),
+        );
+
+        // Drawer nav buttons
+        document.querySelectorAll(".drawer-btn").forEach((b) =>
+          b.addEventListener("click", () => {
+            quizState = null;
+            closeDrawer();
+            renderPage(b.dataset.nav);
+          }),
+        );
+        loadDB();
+        buildTopnavSubjects();
+        renderPage("home");
+      });
+    </script>
+  </body>
+</html>
