@@ -2326,6 +2326,8 @@ ${escHtml(s.name)}</div>
           } else {
             appendChoiceRowInput();
             appendChoiceRowInput();
+            appendChoiceRowInput();
+            appendChoiceRowInput();
           }
         }
       }
@@ -2342,6 +2344,7 @@ ${escHtml(s.name)}</div>
           <input type="text" class="form-input row-txt" placeholder="Response Label String Value" style="margin:0 5px;" value="${prefillText.replace(/"/g, "&quot;")}">
           <div class="row-tools">
             <button type="button" class="row-tool-btn" title="Insert a math symbol or equation">∑</button>
+            <button type="button" class="row-tool-btn row-remove-btn" title="Remove this choice">✕</button>
           </div>
         `;
         box.appendChild(div);
@@ -2349,6 +2352,47 @@ ${escHtml(s.name)}</div>
         const textInput = div.querySelector(".row-txt");
         div.querySelector(".row-tool-btn").addEventListener("click", () => {
           showMathBuilderModal(textInput);
+        });
+        div.querySelector(".row-remove-btn").addEventListener("click", () => {
+          removeChoiceRow(div);
+        });
+
+        updateRemoveButtonsState();
+      }
+
+      function removeChoiceRow(rowEl) {
+        const box = document.getElementById("form-choices-box");
+        if (!box) return;
+        if (box.children.length <= 2) {
+          showToast("At least 2 choices are required.", "error");
+          return;
+        }
+        rowEl.remove();
+        reindexChoiceRows();
+        updateRemoveButtonsState();
+      }
+
+      // Keep the radio/checkbox "value" attributes in sync with row position
+      function reindexChoiceRows() {
+        const box = document.getElementById("form-choices-box");
+        if (!box) return;
+        Array.from(box.children).forEach((row, idx) => {
+          const radioOrCheckbox = row.querySelector(
+            'input[type="radio"], input[type="checkbox"]',
+          );
+          if (radioOrCheckbox) radioOrCheckbox.value = idx;
+        });
+      }
+
+      // Disable remove buttons when only 2 choices remain
+      function updateRemoveButtonsState() {
+        const box = document.getElementById("form-choices-box");
+        if (!box) return;
+        const atMin = box.children.length <= 2;
+        box.querySelectorAll(".row-remove-btn").forEach((btn) => {
+          btn.disabled = atMin;
+          btn.style.opacity = atMin ? "0.35" : "1";
+          btn.style.cursor = atMin ? "not-allowed" : "pointer";
         });
       }
 
@@ -2486,7 +2530,7 @@ ${escHtml(s.name)}</div>
         });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = `quizme_backup_${Date.now()}.json`;
+        a.download = `brainsnack_backup_${Date.now()}.json`;
         a.click();
       }
 
