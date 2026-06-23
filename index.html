@@ -2285,7 +2285,11 @@ ${escHtml(s.name)}</div>
           document.getElementById("form-expl").value = qRef.explanation || "";
           adaptQuestionFormType(qRef.type, qRef);
         } else {
-          adaptQuestionFormType(adminForm.type);
+          // Always reset to MCQ when opening a fresh form, regardless of
+          // what type was used last session
+          adminForm.type = "mcq";
+          document.getElementById("form-type").value = "mcq";
+          adaptQuestionFormType("mcq");
         }
         // ─── Activate the Rich Content Composer on text fields ───
         enhanceTextareaWithRichEditor(document.getElementById("form-text"));
@@ -2481,7 +2485,11 @@ ${escHtml(s.name)}</div>
             img: uploadedImageBase64,
           });
           saveDB();
-          showToast("Assessment node merged cleanly.", "success");
+          // Persist the current subject/exam selection so the form
+          // reopens on the same exam after save
+          adminForm.subjectId = sid;
+          adminForm.examId = eid;
+          showToast("Question saved!", "success");
           buildTopnavSubjects();
           switchAdminTab("questions");
         }
